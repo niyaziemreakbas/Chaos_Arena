@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a0551ec95fabbc40a9199be3c0b591f, type: 3}
+  m_Name: Dino
+  m_EditorClassIdentifier: 
+  cardName: Dinozorlar ben zorlamam
+  health: 100
+  damage: 80
+  range: 10
+  movementSpeed: 20
+  attackSpeed: 5
+  cardImage: {fileID: 21300000, guid: fbceea2e0d1573f4684480c24740d622, type: 3}

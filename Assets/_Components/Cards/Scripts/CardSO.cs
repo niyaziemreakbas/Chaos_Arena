@@ -1,0 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "NewCard", menuName = "Cards/Card")]
+public class CardSO : ScriptableObject
+{
+    [Header("Card Details")]
+    public string cardName;
+
+    public int health;
+
+    public int damage;
+
+    public float range;
+
+    public int movementSpeed;
+
+    public int attackSpeed;
+
+    public Sprite cardImage;
+}
