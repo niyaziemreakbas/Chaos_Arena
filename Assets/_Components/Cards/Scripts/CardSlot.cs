@@ -3,49 +3,69 @@ using UnityEngine.EventSystems;
 
 public class CardSlot : MonoBehaviour, IDropHandler
 {
-    private CardData currentCard;
+    private Card currentCard;
 
-    public CardData CurrentCard => currentCard;
+    public Card CurrentCard => currentCard;
 
     private void Start()
     {
         SetChildrenToCurrentCard();
-        print(CurrentCard.cardName);
+        //print(CurrentCard.CardData.cardName);
     }
 
-    public void OnDrop(PointerEventData eventData)
-    {
-        Debug.Log("Bir þey buraya býrakýldý: " + eventData.pointerDrag.name);
+    //public void OnDrop(PointerEventData eventData)
+    //{
 
-        var card = eventData.pointerDrag.GetComponent<CardDragHandler>();
+    //    Card droppedCard = eventData.pointerDrag.GetComponent<Card>();
 
-        if (HasCard()) 
-        {
-            CardSwapManager.Instance.SwapCards(GetComponent<CardSlot>(), eventData.pointerDrag.GetComponent<CardDragHandler>().CurrentSlot);
-        }
+    //    Debug.Log("Bir þey buraya býrakýldý: " + droppedCard.CardData.cardName);
 
-        if (card != null)
-        {
 
-            card.transform.SetParent(transform);
-            card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        }
-    }
+    //    if (HasCard()) 
+    //    {
+    //        print($"CardSlot: {currentCard.CardData.cardName} Has current card, swapping with dropped card.");
+    //        if (droppedCard == null)
+    //        {
+    //            Debug.LogWarning("Dropped  Card. null");
+    //            return;
+    //        }
+    //        if(currentCard == null)
+    //        {
+    //            Debug.LogWarning("current card null.");
+    //            return;
+    //        }
+    //        CardSwapManager.Instance.SwapCards(currentCard, droppedCard);
+    //    }
+    //    else if (droppedCard != null)
+    //    {
+    //        SetCurrentCard(droppedCard);
+    //    }
+    //}
+
+
 
     void SetChildrenToCurrentCard()
     {
-        SetCard(transform.GetComponentInChildren<Card>().CardData);
+        SetCurrentCard(transform.GetComponentInChildren<Card>());
     }
 
-    public void SetCard(CardData newCard)
+    //Need an animation
+    public void SetCurrentCard(Card newCard)
     {
+        //print("Setting current card: " + newCard.CardData.cardName + " to " + this.name);
         currentCard = newCard;
+        newCard.transform.SetParent(transform);
+        newCard.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        newCard.SetCurrentSlot(this);
     }
 
     public bool HasCard()
     {
-        return GetComponentInChildren<Card>() != null;
+        return currentCard != null;
     }
 
-
+    public void OnDrop(PointerEventData eventData)
+    {
+        //throw new System.NotImplementedException();
+    }
 }

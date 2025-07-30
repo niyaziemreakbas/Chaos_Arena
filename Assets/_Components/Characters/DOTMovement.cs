@@ -2,14 +2,8 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
-public class CharMovement : MonoBehaviour
+public class DOTMovement : MonoBehaviour
 {
-    [Header("Movement")]
-    public float jumpDistance = 2f;
-    public float jumpHeight = 1f;
-    public float jumpDuration = 0.5f;
-    public float jumpInterval = 1f;
-
     [Header("Rotation")]
     public float flipChance = 0.3f; // %30 ihtimalle döner
     public float tiltAngle = 10f;
@@ -20,26 +14,32 @@ public class CharMovement : MonoBehaviour
 
     public enum CharacterState { Idle, Move, Attack }
 
-    private CharacterState currentState = CharacterState.Idle;
+    private CharacterState currentState;
     private Tween currentTween;
 
     void Start()
     {
         SetState(CharacterState.Idle);
-        if(CompareTag("Player"))
+        if (CompareTag("Player"))
+        {
+            // Oyuncu karakteri için baþlangýçta hareket etmeye baþla
+            SetState(CharacterState.Idle);
+        }
+        if (CompareTag("Enemy"))
         {
             // Oyuncu karakteri için baþlangýçta hareket etmeye baþla
             SetState(CharacterState.Move);
         }
+        print(gameObject.name + " : Character initialized in state: " + currentState);
     }
 
     public void SetState(CharacterState newState)
     {
-        if (newState == currentState)
-            return;
+        //if (newState == currentState)
+        //    return;
 
         // Önce önceki animasyonu iptal et
-        currentTween?.Kill();
+        //currentTween?.Kill();
 
         currentState = newState;
 
@@ -59,14 +59,26 @@ public class CharMovement : MonoBehaviour
 
     Tween PlayIdleAnimation()
     {
-        // Hafif nefes alma efekti
-        return transform.DOScale(new Vector3(1.05f, 1.05f, 1), 1f)
+        Debug.Log("Idle animation started");
+
+        // Scale idle efekti
+        Tween scaleTween = transform.DOScale(new Vector3(1.05f, 1.05f, 1f), 1f)
             .SetLoops(-1, LoopType.Yoyo)
             .SetEase(Ease.InOutSine);
+
+        // Tilt idle efekti
+        transform.DORotate(new Vector3(0f, 0f, 10f), 1f)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);
+
+        return scaleTween; // sadece biri kontrol için yeter
     }
+
 
     Tween PlayRunAnimation()
     {
+        Debug.Log("run animation started");
+
         // Ýleriye doðru sürekli hareket (1 birim saða)
         return transform.DOMoveY(transform.position.y + 1, 0.5f)
             .SetLoops(-1, LoopType.Incremental)

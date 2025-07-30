@@ -18,5 +18,7 @@ public class CardSO : ScriptableObject
 
     public int attackSpeed;
 
+    public int priorityLevel;
+
     public Sprite cardImage;
 }

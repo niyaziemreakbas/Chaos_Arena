@@ -7,14 +7,10 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     //public bool dragOnSurfaces = true;
     private CanvasGroup canvasGroup;
 
-    CardSlot currentSlot;
-    public CardSlot CurrentSlot => currentSlot;
-
-    Transform startParent;
-    // public getters of StartPArent
-
    // private GameObject m_DraggingIcon;
     private RectTransform draggingPlane;
+
+    private Transform draggingArea;
 
     private void Awake()
     {
@@ -29,11 +25,32 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         //}
     }
 
+    void Start()
+    {
+        draggingArea = GameObject.FindWithTag("OnDragCards").transform;
+
+        if (draggingArea == null)
+            print(draggingArea + " draggingArea is null. Make sure you have a GameObject with tag 'OnDragCards' in the scene.");
+
+    }
+
+    public void ReturnToOriginalSlot()
+    {
+        CardSlot currentSlot = GetComponent<Card>().CurrentSlot;
+        if (currentSlot != null)
+        {
+            RectTransform rt = GetComponent<RectTransform>();
+            rt.anchoredPosition = Vector2.zero; // Reset position to slot's position
+            currentSlot.SetCurrentCard(GetComponent<Card>());
+        }
+        else
+        {
+            Debug.LogWarning("CardDragHandler: Current slot is null. Cannot return to original slot.");
+        }
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        startParent = transform.parent;
-        currentSlot = GetComponentInParent<CardSlot>();
-
         var canvas = GetComponentInParent<Canvas>();
         if (canvas == null)
         {
@@ -55,6 +72,7 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnDrag(PointerEventData data)
     {
+        transform.SetParent(draggingArea, true);
         SetDraggedPosition(data);
         //if (m_DraggingIcon != null)
             
@@ -80,16 +98,35 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         canvasGroup.blocksRaycasts = true;
 
-        if (transform.parent == startParent)
+        GameObject target = eventData.pointerEnter;
+       // Debug.Log("OnEndDrag: " + target?.name);
+
+        if (target == null)
         {
-            transform.SetParent(startParent);
-            currentSlot = GetComponentInParent<CardSlot>();
-            transform.localPosition = Vector3.zero;
-            print("CardDragHandler: Card returned to its original parent.");
+            Debug.Log("Hiçbir þeyin üstüne býrakýlmadý.");
+            ReturnToOriginalSlot();
+            return;
         }
 
-        //if (m_DraggingIcon != null)
-        //    Destroy(m_DraggingIcon);
+        // Parent zincirinde arýyoruz
+        Card targetCard = target.GetComponentInParent<Card>();
+        CardSlot targetSlot = target.GetComponentInParent<CardSlot>();
+
+        if (targetCard != null)
+        {
+            Debug.Log("Kartýn üstüne býrakýldý: " + targetCard.name);
+            CardSwapManager.Instance.SwapCards(GetComponent<Card>(), targetCard);
+        }
+        else if (targetSlot != null)
+        {
+            Debug.Log("Slot'un üstüne býrakýldý: " + targetSlot.name);
+            targetSlot.SetCurrentCard(GetComponent<Card>());
+        }
+        else
+        {
+            Debug.Log("Ne kart ne slot bulundu, eski konuma dön.");
+            ReturnToOriginalSlot();
+        }
     }
 
 }

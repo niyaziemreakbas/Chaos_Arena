@@ -11,10 +11,17 @@ public class CardSwapManager : MonoBehaviour
         Instance = this;
     }
 
-    public void SwapCards(CardSlot slot1, CardSlot slot2)
+    public void SwapCards(Card card1, Card card2)
     {
-        CardData tempCard = slot1.CurrentCard;
-        slot1.SetCard(slot2.CurrentCard);
-        slot2.SetCard(tempCard);
+        print($"Swapping cards: {card1.CardData.cardName} {card1.CurrentSlot.name} with {card2.CardData.cardName} {card2.CurrentSlot.name}");
+
+        CardSlot slot1 = card1.CurrentSlot;
+        CardSlot slot2 = card2.CurrentSlot;
+
+        slot1.SetCurrentCard(card2);
+        slot2.SetCurrentCard(card1);
+
+        print($"Swapped cards: {card1.CardData.cardName} {card1.CurrentSlot.name} with {card2.CardData.cardName} {card2.CurrentSlot.name}");
+
     }
 }

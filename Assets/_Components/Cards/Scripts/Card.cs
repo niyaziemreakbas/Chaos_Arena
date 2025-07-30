@@ -6,8 +6,12 @@ using UnityEngine;
 public class Card : MonoBehaviour
 {
     [SerializeField] private CardSO cardSO;
+
     private CardData cardData; 
     public CardData CardData => cardData;
+
+    private CardSlot currentSlot;
+    public CardSlot CurrentSlot => currentSlot;
 
     private CardView view;
 
@@ -16,6 +20,12 @@ public class Card : MonoBehaviour
         cardData = new CardData(cardSO);
         view = GetComponent<CardView>();
         view.SetCardData(cardData);
+    }
+
+    public void SetCurrentSlot(CardSlot slot)
+    {
+        currentSlot = slot;
+        
     }
 
     public void UpgradeStats()
@@ -27,6 +37,8 @@ public class Card : MonoBehaviour
 public class CardData{
 
     public string cardName;
+
+    public int priorityLevel;
 
     public int health;
 
@@ -44,6 +56,7 @@ public class CardData{
 
     public CardData(CardSO cardSO)
     {
+        priorityLevel = cardSO.priorityLevel;
         cardName = cardSO.cardName;
         health = cardSO.health;
         damage = cardSO.damage;
