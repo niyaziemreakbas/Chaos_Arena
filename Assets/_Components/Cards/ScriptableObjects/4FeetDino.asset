@@ -18,5 +18,5 @@ MonoBehaviour:
   range: 10
   movementSpeed: 20
   attackSpeed: 5
-  priorityLevel: 1
+  priorityLevel: 3
   cardImage: {fileID: 21300000, guid: ca550ed48cea3864f801716c0805ae8c, type: 3}

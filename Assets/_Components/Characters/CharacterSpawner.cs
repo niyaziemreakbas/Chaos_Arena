@@ -4,17 +4,8 @@ using UnityEngine;
 
 public class CharacterSpawner : MonoBehaviour
 {
-
     [SerializeField] private float spawnInterval = 3f;
-
     [SerializeField] private GameObject charPrefab;
-
-
-    [SerializeField] private List<CharacterData> selectedCharacters;
-
-    private List<CharacterData> characterQueue = new List<CharacterData>();
-    private Dictionary<string, List<GameObject>> unitGroups = new Dictionary<string, List<GameObject>>();
-    private Dictionary<string, Color> unitColors = new Dictionary<string, Color>();
 
     [Header("Reposition Settings")]
     [SerializeField] private int maxUnitsPerRow = 8;
@@ -22,17 +13,14 @@ public class CharacterSpawner : MonoBehaviour
     [SerializeField] private float spacingX = 2f;
     [SerializeField] private float spacingY = 3f;
 
-
-    private void Awake()
+    private void OnEnable()
     {
-        if (selectedCharacters == null || selectedCharacters.Count == 0)
-        {
-            selectedCharacters = new List<CharacterData>();
-            foreach (var card in CardSelectManager.Instance.SelectedCards)
-            {
-                selectedCharacters.Add(new CharacterData(card));
-            }
-        }
+        UpgradeManager.OnSpawnCharacter += SpawnCharacter;
+    }
+
+    private void OnDisable()
+    {
+        UpgradeManager.OnSpawnCharacter -= SpawnCharacter;
     }
 
     private void Start()
@@ -46,54 +34,54 @@ public class CharacterSpawner : MonoBehaviour
         {
             yield return new WaitForSeconds(spawnInterval);
 
-            if (selectedCharacters.Count == 0)
+            if (CharacterManager.Instance.SelectedCharacters.Count == 0)
                 continue;
 
-            CharacterData randomChar = selectedCharacters[Random.Range(0, selectedCharacters.Count)];
-            int count = Random.Range(1, 4); // 1-3 arasý rastgele sayýda karakter spawn et
+            CharacterData randomChar = CharacterManager.Instance.SelectedCharacters[Random.Range(0, CharacterManager.Instance.SelectedCharacters.Count)];
+            int count = Random.Range(1, 4);
 
-            SpawnCharacter(randomChar,count);
+            SpawnCharacter(randomChar, count);
             RepositionCharacters();
         }
     }
 
     public void SpawnCharacter(CharacterData data, int count)
     {
+        var mgr = CharacterManager.Instance;
         string key = data.charName;
 
-        // Renk atamasý yoksa oluþtur
-        if (!unitColors.ContainsKey(key))
-            unitColors[key] = new Color(Random.value, Random.value, Random.value);
+        if (!mgr.UnitColors.ContainsKey(key))
+            mgr.UnitColors[key] = new Color(Random.value, Random.value, Random.value);
 
-        // Önceden characterQueue'da yoksa ekle
-        if (!characterQueue.Exists(c => c.charName == key))
+        if (!mgr.CharacterOrder.Exists(c => c.charName == key))
         {
             int insertIndex = GetOrdinalIndex(data);
-            characterQueue.Insert(insertIndex, data);
+            mgr.CharacterOrder.Insert(insertIndex, data);
         }
 
-        // Grup yoksa oluþtur
-        if (!unitGroups.ContainsKey(key))
-            unitGroups[key] = new List<GameObject>();
+        if (!mgr.UnitGroups.ContainsKey(key))
+            mgr.UnitGroups[key] = new List<GameObject>();
 
-        // Karakterleri instantiate et, ama pozisyon vermeden
         for (int i = 0; i < count; i++)
         {
             GameObject obj = Instantiate(charPrefab);
+            obj.GetComponent<Character>().SetCharData(data);
             obj.name = key;
-            obj.GetComponent<SpriteRenderer>().color = unitColors[key];
-            unitGroups[key].Add(obj);
+            obj.GetComponent<SpriteRenderer>().color = mgr.UnitColors[key];
+            mgr.UnitGroups[key].Add(obj);
         }
     }
 
     public void RepositionCharacters()
     {
-        foreach (var kvp in unitGroups)
+        var mgr = CharacterManager.Instance;
+
+        foreach (var kvp in mgr.UnitGroups)
         {
             string key = kvp.Key;
             List<GameObject> group = kvp.Value;
 
-            int groupYIndex = characterQueue.FindIndex(c => c.charName == key);
+            int groupYIndex = mgr.CharacterOrder.FindIndex(c => c.charName == key);
 
             for (int i = 0; i < group.Count; i++)
             {
@@ -110,14 +98,16 @@ public class CharacterSpawner : MonoBehaviour
 
     public int GetOrdinalIndex(CharacterData charData)
     {
-        for (int i = 0; i < characterQueue.Count; i++)
+        var mgr = CharacterManager.Instance;
+
+        for (int i = 0; i < mgr.CharacterOrder.Count; i++)
         {
-            if (charData.priorityLevel < characterQueue[i].priorityLevel)
+            if (charData.priorityLevel < mgr.CharacterOrder[i].priorityLevel)
             {
                 return i;
             }
         }
 
-        return characterQueue.Count;
+        return mgr.CharacterOrder.Count;
     }
 }

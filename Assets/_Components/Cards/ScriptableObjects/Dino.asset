@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0551ec95fabbc40a9199be3c0b591f, type: 3}
   m_Name: Dino
   m_EditorClassIdentifier: 
-  cardName: Dinozorlar ben zorlamam
+  cardName: Dinozorlar
   health: 100
   damage: 80
   range: 10
   movementSpeed: 20
   attackSpeed: 5
-  priorityLevel: 0
+  priorityLevel: 1
   cardImage: {fileID: 21300000, guid: fbceea2e0d1573f4684480c24740d622, type: 3}

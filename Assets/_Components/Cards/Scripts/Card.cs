@@ -50,12 +50,15 @@ public class CardData{
 
     public int attackSpeed;
 
+    public int spawnCount;
+
     public Sprite cardImage;
 
     public event Action onStatsChanged;
 
     public CardData(CardSO cardSO)
     {
+        spawnCount = cardSO.spawnCount;
         priorityLevel = cardSO.priorityLevel;
         cardName = cardSO.cardName;
         health = cardSO.health;

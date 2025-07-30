@@ -20,5 +20,7 @@ public class CardSO : ScriptableObject
 
     public int priorityLevel;
 
+    public int spawnCount;
+
     public Sprite cardImage;
 }
