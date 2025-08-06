@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6610124030402764922}
   - component: {fileID: 7231002603942789246}
   - component: {fileID: -6715317330562445398}
+  - component: {fileID: -6679639875854490993}
   m_Layer: 0
   m_Name: CharPrefab
   m_TagString: Untagged
@@ -74,12 +75,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a25d4d7177427954a8b0f9e4c64b238f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 62.500004, y: 62.500004}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -97,3 +98,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c74089c5db8588469178a37ff3cb9be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-6679639875854490993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6805889229215873362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e510751f9b14c418eb43e616afdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flipChance: 0.3
+  tiltAngle: 10
+  tiltSpeed: 1

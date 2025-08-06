@@ -7,7 +7,7 @@ public class CardSelectManager : MonoBehaviour
 {
     public static CardSelectManager Instance { get; private set; }
 
-    public List<CardData> SelectedCards { get; private set; } = new List<CardData>();
+    //public List<CardData> SelectedCards { get; private set; } = new List<CardData>();
 
     [SerializeField] private GameObject inventory;
 
@@ -26,7 +26,7 @@ public class CardSelectManager : MonoBehaviour
 
     public void ApplyCards()
     {
-        SelectedCards.Clear();
+        //SelectedCards.Clear();
 
         foreach (Transform child in inventory.transform)
         {
@@ -34,7 +34,7 @@ public class CardSelectManager : MonoBehaviour
             if (cardSlot != null && cardSlot.CurrentCard != null)
             {
                 print("Card found: " + cardSlot.CurrentCard.CardData.cardName);
-                SelectedCards.Add(cardSlot.CurrentCard.CardData);
+                CharacterManager.Instance.SelectedCharacters.Add(new CharacterData(cardSlot.CurrentCard.CardData));
             }
         }
 

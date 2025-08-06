@@ -36,12 +36,12 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void ReturnToOriginalSlot()
     {
-        CardSlot currentSlot = GetComponent<Card>().CurrentSlot;
+        CardSlot currentSlot = GetComponent<CardController>().CurrentSlot;
         if (currentSlot != null)
         {
             RectTransform rt = GetComponent<RectTransform>();
             rt.anchoredPosition = Vector2.zero; // Reset position to slot's position
-            currentSlot.SetCurrentCard(GetComponent<Card>());
+            currentSlot.SetCurrentCard(GetComponent<CardController>());
         }
         else
         {
@@ -109,18 +109,18 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
 
         // Parent zincirinde arýyoruz
-        Card targetCard = target.GetComponentInParent<Card>();
+        CardController targetCard = target.GetComponentInParent<CardController>();
         CardSlot targetSlot = target.GetComponentInParent<CardSlot>();
 
         if (targetCard != null)
         {
             Debug.Log("Kartýn üstüne býrakýldý: " + targetCard.name);
-            CardSwapManager.Instance.SwapCards(GetComponent<Card>(), targetCard);
+            CardSwapManager.Instance.SwapCards(GetComponent<CardController>(), targetCard);
         }
         else if (targetSlot != null)
         {
             Debug.Log("Slot'un üstüne býrakýldý: " + targetSlot.name);
-            targetSlot.SetCurrentCard(GetComponent<Card>());
+            targetSlot.SetCurrentCard(GetComponent<CardController>());
         }
         else
         {

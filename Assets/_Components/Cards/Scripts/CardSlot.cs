@@ -3,9 +3,9 @@ using UnityEngine.EventSystems;
 
 public class CardSlot : MonoBehaviour, IDropHandler
 {
-    private Card currentCard;
+    private CardController currentCard;
 
-    public Card CurrentCard => currentCard;
+    public CardController CurrentCard => currentCard;
 
     private void Start()
     {
@@ -46,11 +46,11 @@ public class CardSlot : MonoBehaviour, IDropHandler
 
     void SetChildrenToCurrentCard()
     {
-        SetCurrentCard(transform.GetComponentInChildren<Card>());
+        SetCurrentCard(transform.GetComponentInChildren<CardController>());
     }
 
     //Need an animation
-    public void SetCurrentCard(Card newCard)
+    public void SetCurrentCard(CardController newCard)
     {
         //print("Setting current card: " + newCard.CardData.cardName + " to " + this.name);
         currentCard = newCard;

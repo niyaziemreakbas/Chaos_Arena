@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CharacterSpawner : MonoBehaviour
 {
@@ -8,19 +9,27 @@ public class CharacterSpawner : MonoBehaviour
     [SerializeField] private GameObject charPrefab;
 
     [Header("Reposition Settings")]
-    [SerializeField] private int maxUnitsPerRow = 8;
-    [SerializeField] private Transform spawnOrigin;
+    [SerializeField] private int maxUnitsPerRow = 6;
     [SerializeField] private float spacingX = 2f;
     [SerializeField] private float spacingY = 3f;
 
+    [Header("Player Spawn Origins")]
+    [SerializeField] private Transform playerSpawnOrigin;
+    [SerializeField] private Transform playerChars;
+
+    [Header("Enemy Spawn Origins")]
+    [SerializeField] private Transform enemySpawnOrigin;
+    [SerializeField] private Transform enemyChars;
+
+
     private void OnEnable()
     {
-        UpgradeManager.OnSpawnCharacter += SpawnCharacter;
+        CardUpgradeManager.OnSpawnCharacter += SpawnCharacter;
     }
 
     private void OnDisable()
     {
-        UpgradeManager.OnSpawnCharacter -= SpawnCharacter;
+        CardUpgradeManager.OnSpawnCharacter -= SpawnCharacter;
     }
 
     private void Start()
@@ -30,9 +39,12 @@ public class CharacterSpawner : MonoBehaviour
 
     private IEnumerator SpawnRoutine()
     {
+        print("CharacterSpawner: Starting spawn routine...");
         while (true)
         {
             yield return new WaitForSeconds(spawnInterval);
+
+            print("sayýsýý :: " + CharacterManager.Instance.SelectedCharacters.Count);
 
             if (CharacterManager.Instance.SelectedCharacters.Count == 0)
                 continue;
@@ -50,24 +62,40 @@ public class CharacterSpawner : MonoBehaviour
         var mgr = CharacterManager.Instance;
         string key = data.charName;
 
+        // Renk kaydý
         if (!mgr.UnitColors.ContainsKey(key))
             mgr.UnitColors[key] = new Color(Random.value, Random.value, Random.value);
 
+        // Sýra kaydý
         if (!mgr.CharacterOrder.Exists(c => c.charName == key))
         {
             int insertIndex = GetOrdinalIndex(data);
             mgr.CharacterOrder.Insert(insertIndex, data);
         }
 
+        // Grup listesi
         if (!mgr.UnitGroups.ContainsKey(key))
             mgr.UnitGroups[key] = new List<GameObject>();
 
+        // Parent kontrolü ve oluþturma
+        if (!mgr.UnitParents.ContainsKey(key))
+        {
+            GameObject parentObj = new GameObject(key + "Group");
+            parentObj.transform.parent = playerChars; // istersen sahne kökü yapabilirsin
+            mgr.UnitParents[key] = parentObj.transform;
+        }
+
+        // Karakterleri oluþtur
         for (int i = 0; i < count; i++)
         {
             GameObject obj = Instantiate(charPrefab);
             obj.GetComponent<Character>().SetCharData(data);
             obj.name = key;
             obj.GetComponent<SpriteRenderer>().color = mgr.UnitColors[key];
+
+            // Parent’a ata
+            obj.transform.parent = mgr.UnitParents[key];
+
             mgr.UnitGroups[key].Add(obj);
         }
     }
@@ -82,15 +110,32 @@ public class CharacterSpawner : MonoBehaviour
             List<GameObject> group = kvp.Value;
 
             int groupYIndex = mgr.CharacterOrder.FindIndex(c => c.charName == key);
+            float baseY = playerSpawnOrigin.position.y + groupYIndex * spacingY;
 
             for (int i = 0; i < group.Count; i++)
             {
-                int row = i / maxUnitsPerRow;
-                int col = i % maxUnitsPerRow;
+                int total = group.Count;
+                int leftCount = total / 2;
+                int rightCount = total / 2;
 
-                Vector3 newPos = spawnOrigin.position
-                    + new Vector3(col * spacingX, groupYIndex * spacingY - row * spacingY, 0);
+                // If odd, assign the extra unit randomly
+                if (total % 2 != 0)
+                {
+                    if (Random.value < 0.5f)
+                        leftCount++;
+                    else
+                        rightCount++;
+                }
 
+                int indexInGroup = i;
+                bool placeLeft = indexInGroup < leftCount;
+
+                int indexInSide = placeLeft ? indexInGroup : indexInGroup - leftCount;
+
+                float xOffset = spacingX * (indexInSide); // +1 to avoid spawnOrigin overlap
+                xOffset = placeLeft ? -xOffset : xOffset;
+
+                Vector3 newPos = new Vector3(playerSpawnOrigin.position.x + xOffset, baseY, 0);
                 group[i].transform.position = newPos;
             }
         }
@@ -110,4 +155,6 @@ public class CharacterSpawner : MonoBehaviour
 
         return mgr.CharacterOrder.Count;
     }
+
+
 }

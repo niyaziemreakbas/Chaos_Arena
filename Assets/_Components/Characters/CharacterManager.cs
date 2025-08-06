@@ -17,6 +17,14 @@ public class CharacterManager : MonoBehaviour
     // Dictionary to hold colors for each character name, using for testing
     public Dictionary<string, Color> UnitColors { get; private set; } = new Dictionary<string, Color>();
 
+    // Dictinoary to hold parent transforms for each character name, used for organizing units in the hierarchy
+    public Dictionary<string, Transform> UnitParents { get; private set; } = new Dictionary<string, Transform>();
+
+    public List<GameObject> PlayerCharacters { get; private set; } = new List<GameObject>();
+
+    public List<GameObject> EnemyCharacters { get; private set; } = new List<GameObject>();
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -28,13 +36,13 @@ public class CharacterManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Define selected characters from CardSelectManager
-        if (CardSelectManager.Instance != null)
-        {
-            foreach (var card in CardSelectManager.Instance.SelectedCards)
-            {
-                SelectedCharacters.Add(new CharacterData(card));
-            }
-        }
+        //// Define selected characters from CardSelectManager
+        //if (CardSelectManager.Instance != null)
+        //{
+        //    foreach (var card in CardSelectManager.Instance.SelectedCards)
+        //    {
+        //        SelectedCharacters.Add(new CharacterData(card));
+        //    }
+        //}
     }
 }

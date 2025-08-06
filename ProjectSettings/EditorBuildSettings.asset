@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Components/Scenes/CharDevScene.unity
     guid: babc2b57bfe7a474f9f1fa57598e62e5
+  - enabled: 1
+    path: Assets/_Components/Scenes/UpgradeCardDevScene.unity
+    guid: a6e3bb8180069254397066e05f2e448e
   m_configObjects: {}

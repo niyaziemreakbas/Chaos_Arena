@@ -19,17 +19,8 @@ public class DOTMovement : MonoBehaviour
 
     void Start()
     {
-        SetState(CharacterState.Idle);
-        if (CompareTag("Player"))
-        {
-            // Oyuncu karakteri için baþlangýçta hareket etmeye baþla
-            SetState(CharacterState.Idle);
-        }
-        if (CompareTag("Enemy"))
-        {
-            // Oyuncu karakteri için baþlangýçta hareket etmeye baþla
-            SetState(CharacterState.Move);
-        }
+        SetState(CharacterState.Attack);
+
         print(gameObject.name + " : Character initialized in state: " + currentState);
     }
 
@@ -77,12 +68,12 @@ public class DOTMovement : MonoBehaviour
 
     Tween PlayRunAnimation()
     {
-        Debug.Log("run animation started");
+        return DOTween.Sequence()
+        .Append(transform.DOMoveX(transform.position.x + 1f, 0.2f)
+            .SetEase(Ease.Linear))
+        .Join(transform.DOMoveY(transform.position.y + 0.2f, 0.1f)
+            .SetEase(Ease.OutQuad));
 
-        // Ýleriye doðru sürekli hareket (1 birim saða)
-        return transform.DOMoveY(transform.position.y + 1, 0.5f)
-            .SetLoops(-1, LoopType.Incremental)
-            .SetEase(Ease.Linear);
     }
 
     Tween PlayAttackAnimation()

@@ -8,10 +8,26 @@ public class Character : MonoBehaviour
 
     private int currentHealth;
 
-    //int currentHealth = ;
-    private void Start()
+    [SerializeField] List<Transform> patrolPoints; // Devriye noktalarý
+    [SerializeField] float moveSpeed = 3f;
+    [SerializeField] float arriveThreshold = 0.1f;
+
+    private int currentTargetIndex = 0;
+
+    void Update()
     {
-        
+        if (patrolPoints == null || patrolPoints.Count == 0) return;
+
+        Transform target = patrolPoints[currentTargetIndex];
+        Vector3 direction = (target.position - transform.position).normalized;
+
+        transform.position += direction * moveSpeed * Time.deltaTime;
+
+        float distance = Vector3.Distance(transform.position, target.position);
+        if (distance <= arriveThreshold)
+        {
+            currentTargetIndex = (currentTargetIndex + 1) % patrolPoints.Count;
+        }
     }
 
     public bool UpgradeChar()
@@ -38,6 +54,8 @@ public class Character : MonoBehaviour
 }
 public class CharacterData
 {
+    public Sprite charImage;
+
     public int charLevel;
 
     public string charName;
@@ -66,5 +84,6 @@ public class CharacterData
         range = cardData.range;
         movementSpeed = cardData.movementSpeed;
         attackSpeed = cardData.attackSpeed;
+        charImage = cardData.cardImage;
     }
 }

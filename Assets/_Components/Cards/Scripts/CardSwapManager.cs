@@ -11,7 +11,7 @@ public class CardSwapManager : MonoBehaviour
         Instance = this;
     }
 
-    public void SwapCards(Card card1, Card card2)
+    public void SwapCards(CardController card1, CardController card2)
     {
         print($"Swapping cards: {card1.CardData.cardName} {card1.CurrentSlot.name} with {card2.CardData.cardName} {card2.CurrentSlot.name}");
 
