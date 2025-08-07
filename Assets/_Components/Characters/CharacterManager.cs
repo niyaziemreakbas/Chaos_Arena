@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterManager : MonoBehaviour
+public class CharacterManager : MonoBehaviourSingleton<CharacterManager>
 {
-    public static CharacterManager Instance { get; private set; }
-
     //Selected characters from the card selection
     public List<CharacterData> SelectedCharacters { get; private set; } = new List<CharacterData>();
 
@@ -24,25 +22,4 @@ public class CharacterManager : MonoBehaviour
 
     public List<GameObject> EnemyCharacters { get; private set; } = new List<GameObject>();
 
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-
-        //// Define selected characters from CardSelectManager
-        //if (CardSelectManager.Instance != null)
-        //{
-        //    foreach (var card in CardSelectManager.Instance.SelectedCards)
-        //    {
-        //        SelectedCharacters.Add(new CharacterData(card));
-        //    }
-        //}
-    }
 }

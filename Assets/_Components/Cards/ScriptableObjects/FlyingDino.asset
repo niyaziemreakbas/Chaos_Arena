@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0551ec95fabbc40a9199be3c0b591f, type: 3}
   m_Name: FlyingDino
   m_EditorClassIdentifier: 
-  cardName: "U\xE7anKa\xE7an"
+  cardName: FlyingRanged
   health: 100
   damage: 80
   range: 10
   movementSpeed: 20
   attackSpeed: 5
   priorityLevel: 2
-  cardImage: {fileID: 21300000, guid: b68156199267d3f42ad283b8bf02536c, type: 3}
+  spawnCount: 4
+  cardImage: {fileID: 21300000, guid: 644e6c65912ffb7479ba28f483051df9, type: 3}

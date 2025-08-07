@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CharacterSpawner : MonoBehaviour
+public class CharacterSpawner : MonoBehaviourSingleton<CharacterSpawner>
 {
     [SerializeField] private float spawnInterval = 3f;
     [SerializeField] private GameObject charPrefab;
@@ -32,10 +32,15 @@ public class CharacterSpawner : MonoBehaviour
         CardUpgradeManager.OnSpawnCharacter -= SpawnCharacter;
     }
 
-    private void Start()
-    {
-        StartCoroutine(SpawnRoutine());
-    }
+    //protected override void SingletonStarted()
+    //{
+    //    base.SingletonStarted();
+    //}
+
+    //private void Start()
+    //{
+    //    StartCoroutine(SpawnRoutine());
+    //}
 
     private IEnumerator SpawnRoutine()
     {
@@ -98,6 +103,10 @@ public class CharacterSpawner : MonoBehaviour
 
             mgr.UnitGroups[key].Add(obj);
         }
+
+        RepositionCharacters();
+
+        print($"CharacterSpawner: Spawned {count} units of {key} at {mgr.UnitParents[key].position} with color {mgr.UnitColors[key]}");
     }
 
     public void RepositionCharacters()

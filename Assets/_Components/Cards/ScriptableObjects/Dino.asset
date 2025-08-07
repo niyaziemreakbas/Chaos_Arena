@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0551ec95fabbc40a9199be3c0b591f, type: 3}
   m_Name: Dino
   m_EditorClassIdentifier: 
-  cardName: Dinozorlar
+  cardName: Dino
   health: 100
   damage: 80
-  range: 10
+  range: 1
   movementSpeed: 20
   attackSpeed: 5
   priorityLevel: 1
-  cardImage: {fileID: 21300000, guid: fbceea2e0d1573f4684480c24740d622, type: 3}
+  spawnCount: 3
+  cardImage: {fileID: 21300000, guid: 1cf9f1aab5bf30b43bf1eac520a1fa3b, type: 3}

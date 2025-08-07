@@ -33,7 +33,7 @@ public class CardSelectManager : MonoBehaviour
             CardSlot cardSlot = child.GetComponent<CardSlot>();
             if (cardSlot != null && cardSlot.CurrentCard != null)
             {
-                print("Card found: " + cardSlot.CurrentCard.CardData.cardName);
+                //print("Card found: " + cardSlot.CurrentCard.CardData.cardName);
                 CharacterManager.Instance.SelectedCharacters.Add(new CharacterData(cardSlot.CurrentCard.CardData));
             }
         }

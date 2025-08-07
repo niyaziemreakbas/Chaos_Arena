@@ -6,8 +6,6 @@ public class Character : MonoBehaviour
 {
     private CharacterData characterData;
 
-    private int currentHealth;
-
     [SerializeField] List<Transform> patrolPoints; // Devriye noktalarý
     [SerializeField] float moveSpeed = 3f;
     [SerializeField] float arriveThreshold = 0.1f;
@@ -18,15 +16,19 @@ public class Character : MonoBehaviour
     {
         if (patrolPoints == null || patrolPoints.Count == 0) return;
 
-        Transform target = patrolPoints[currentTargetIndex];
-        Vector3 direction = (target.position - transform.position).normalized;
+        // 2D pozisyonlar: sadece x ve y eksenleri
+        Vector2 currentPosition = new Vector2(transform.position.x, transform.position.y);
+        Vector2 targetPosition = new Vector2(patrolPoints[currentTargetIndex].position.x, patrolPoints[currentTargetIndex].position.y);
 
-        transform.position += direction * moveSpeed * Time.deltaTime;
+        Vector2 direction = (targetPosition - currentPosition).normalized;
+        Vector2 newPosition = currentPosition + direction * moveSpeed * Time.deltaTime;
 
-        float distance = Vector3.Distance(transform.position, target.position);
+        transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z); // z sabit kalmalý
+
+        float distance = Vector2.Distance(currentPosition, targetPosition);
         if (distance <= arriveThreshold)
         {
-            currentTargetIndex = (currentTargetIndex + 1) % patrolPoints.Count;
+            currentTargetIndex = (currentTargetIndex + 1) % patrolPoints.Count; // loop yapmak için
         }
     }
 
