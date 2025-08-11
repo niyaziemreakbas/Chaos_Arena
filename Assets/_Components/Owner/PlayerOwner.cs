@@ -16,6 +16,7 @@ public class PlayerOwner : Owner
     private void Initialize()
     {
         unitRegistry.SelectedCharacters = DataManager.Instance.PlayerSelectedCharacters;
+        isUpward = true; // Assuming player is always upward for now
 
         //foreach (var character in unitRegistry.SelectedCharacters)
         //{
@@ -33,5 +34,6 @@ public class PlayerOwner : Owner
     protected override void HandleFightState()
     {
         OnFightViewHandle?.Invoke();
+        upgradeCount = 0; // Reset upgrade count after fight
     }
 }

@@ -724,9 +724,9 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   spawnInterval: 3
   charPrefab: {fileID: 6805889229215873362, guid: 116e98bc13f4f644687db582d93ee2ea, type: 3}
-  maxUnitsPerRow: 5
+  maxUnitsPerRow: 8
   spacingX: 1
-  spacingY: 2
+  spacingY: 1
 --- !u!114 &1193734602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1230,6 +1230,10 @@ PrefabInstance:
     - target: {fileID: 169932097627597999, guid: 641209f53917ecb40a88a067cd7e8ce1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2017334003703037861, guid: 641209f53917ecb40a88a067cd7e8ce1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.17
       objectReference: {fileID: 0}
     - target: {fileID: 5072048064691103030, guid: 641209f53917ecb40a88a067cd7e8ce1, type: 3}
       propertyPath: m_Name

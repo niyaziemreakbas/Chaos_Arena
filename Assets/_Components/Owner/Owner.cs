@@ -10,6 +10,9 @@ public class Owner : MonoBehaviour
     public string ownerName;
     public Color teamColor;
 
+    protected bool isUpward;
+    public bool IsUpward => isUpward;
+
     protected int upgradeCount = 0;
     public int UpgradeCount => upgradeCount;
 
@@ -46,6 +49,8 @@ public class Owner : MonoBehaviour
                 Debug.LogWarning("Unhandled game state!");
                 break;
         }
+        print(unitRegistry.SpawnedCharacters.Count + " current spawned char Count for owner: " + ownerName);
+
     }
 
     protected virtual void HandleUpgradeState() { }

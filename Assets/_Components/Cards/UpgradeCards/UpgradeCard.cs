@@ -50,6 +50,7 @@ public class UpgradeCard : MonoBehaviour, IPointerClickHandler
         }
     }
 }
+
 public class UpgradeCardData
 {
     public Sprite charImage;

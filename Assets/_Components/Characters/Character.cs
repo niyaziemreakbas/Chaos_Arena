@@ -23,8 +23,6 @@ public class Character : MonoBehaviour
     private void Awake()
     {
         dotMovement = GetComponent<DOTMovement>();
-
-
     }
 
     private void Start()
@@ -50,31 +48,36 @@ public class Character : MonoBehaviour
     //    // PatrolMovement();
     //}
 
-    //public GameObject GetClosestTarget()
-    //{
-    //    var mgr = CharacterManager.Instance;
-    //    if (targets == null || targets.Count == 0)
-    //        return null;
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        collision.gameObject.SetActive(false); // Karakter bir hedefe ulaþtýðýnda onu devre dýþý býrak
+    }
 
-    //    GameObject closest = null;
-    //    float closestDistance = Mathf.Infinity;
-    //    Vector2 currentPosition = transform.position;
+    public GameObject GetClosestTarget(Owner targetOwner)
+    {
+        List<GameObject> targets = targetOwner.UnitRegistry.SpawnedCharacters;
 
-    //    foreach (GameObject target in targets)
-    //    {
-    //        if (target == null) continue;
+        if (targets == null || targets.Count == 0)
+            return null;
 
-    //        float distance = Vector2.Distance(currentPosition, target.transform.position);
-    //        if (distance < closestDistance)
-    //        {
-    //            closestDistance = distance;
-    //            closest = target;
-    //        }
-    //    }
+        GameObject closest = null;
+        float closestDistance = Mathf.Infinity;
+        Vector2 currentPosition = transform.position;
 
-    //    return closest;
-    //}
+        foreach (GameObject target in targets)
+        {
+            if (target == null) continue;
 
+            float distance = Vector2.Distance(currentPosition, target.transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closest = target;
+            }
+        }
+
+        return closest;
+    }
 
     public void MoveToTarget(Vector2 targetPosition)
     {
@@ -140,6 +143,8 @@ public class Character : MonoBehaviour
 }
 public class CharacterData
 {
+    public Color charColor; 
+
     public Sprite charImage;
 
     public int charLevel;
@@ -171,5 +176,6 @@ public class CharacterData
         movementSpeed = cardData.movementSpeed;
         attackSpeed = cardData.attackSpeed;
         charImage = cardData.cardImage;
+        charColor = cardData.cardColor;
     }
 }

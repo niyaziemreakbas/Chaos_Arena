@@ -13,7 +13,7 @@ public class AIOwner : Owner
     void Initialize()
     {
         unitRegistry.SelectedCharacters = DataManager.Instance.RandomlySelectDeck();
-
+        isUpward = false; // Assuming AI is always downward for now
         //foreach (var character in unitRegistry.SelectedCharacters)
         //{
         //    print("AIOWner : " + character.charName);
@@ -27,6 +27,6 @@ public class AIOwner : Owner
 
     protected override void HandleFightState()
     {
-
+        upgradeCount = 0; // Reset upgrade count after fight
     }
 }

@@ -71,7 +71,7 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
     {
         foreach (var owner in owners)
         {
-            print($"Checking owner: {owner.ownerName} with upgrade count: {owner.UpgradeCount} against current upgrade count: {currentUpgradeCount}");
+            //print($"Checking owner: {owner.ownerName} with upgrade count: {owner.UpgradeCount} against current upgrade count: {currentUpgradeCount}");
             if (owner.UpgradeCount != currentUpgradeCount)
             {
                 canUpgrade = false;
@@ -98,9 +98,10 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
         {
             print("Max upgrade count reached, switching to fight state.");
             ChangeState(GameState.Fight);
+            StartCoroutine(HandleTempFightState());
         }
 
-        print($"All owners have performed their upgrades. Current upgrade count: {currentUpgradeCount}");
+        print($"All owners have performed their upgrades. Upgrade count increasing...Current upgrade count: {currentUpgradeCount}");
         HandleStatesOnOwners();
     }
 
@@ -116,6 +117,12 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
         }
     }
 
+    private IEnumerator HandleTempFightState()
+    {
+        yield return new WaitForSeconds(5f);
+        currentUpgradeCount = 0; // Reset upgrade count after fight state
+        ChangeState(GameState.Upgrade);
+    }
 }
 
 public enum GameState

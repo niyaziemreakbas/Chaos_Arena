@@ -154,8 +154,7 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
             return false;
         }
 
-        //OnSpawnCharacter?.Invoke(charData, units.Count * 2);
-        CharacterSpawner.Instance.SpawnCharacter(charData, units.Count * 2, owner);
+        CharacterSpawner.Instance.SpawnCharacter(charData, units.Count, owner);
         return true;
     }
 

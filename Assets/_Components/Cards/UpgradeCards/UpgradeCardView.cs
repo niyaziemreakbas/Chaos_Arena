@@ -52,5 +52,7 @@ public class UpgradeCardView : MonoBehaviour
                 upgradeImage.gameObject.SetActive(false);
                 break;
         }
+
+        GetComponent<Image>().color = upgradeCard.charData.charColor;
     }
 }
