@@ -1,0 +1,64 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Owner : MonoBehaviour
+{
+    public event Action<Owner> OnUpgradePerformed;
+
+    public string ownerName;
+    public Color teamColor;
+
+    protected int upgradeCount = 0;
+    public int UpgradeCount => upgradeCount;
+
+    // The spawn origin for owner's characters, where new characters will be instantiated
+    public Transform spawnOrigin;
+
+    // The root transform for characters, used for organizing character gameObjects in the hierarchy
+    public Transform charsRoot;
+
+    protected UnitRegistry unitRegistry;
+    public UnitRegistry UnitRegistry => unitRegistry;
+
+    //private void OnEnable()
+    //{
+    //    GameStateManager.Instance.OnStateHandle += HandleState;
+    //}
+    //private void OnDisable()
+    //{
+    //    GameStateManager.Instance.OnStateHandle -= HandleState;
+    //}
+
+
+    public void HandleState(GameState currentState)
+    {
+        switch (currentState)
+        {
+            case GameState.Upgrade:
+                HandleUpgradeState();
+                break;
+            case GameState.Fight:
+                HandleFightState();
+                break;
+            default:
+                Debug.LogWarning("Unhandled game state!");
+                break;
+        }
+    }
+
+    protected virtual void HandleUpgradeState() { }
+    protected virtual void HandleFightState() { }
+
+    private void Awake()
+    {
+        unitRegistry = new UnitRegistry();
+    }
+
+    public void OnUpgradePerformedFunc() { 
+      //  print($"Upgrade performed by {ownerName}. Current upgrade count: {upgradeCount}");
+        upgradeCount++;
+        OnUpgradePerformed?.Invoke(this);
+    }
+}

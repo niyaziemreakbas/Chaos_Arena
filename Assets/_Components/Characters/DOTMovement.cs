@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using System.Collections;
+using static UnityEngine.GraphicsBuffer;
 
 public class DOTMovement : MonoBehaviour
 {
@@ -18,6 +19,14 @@ public class DOTMovement : MonoBehaviour
     public float jumpHeight = 0.3f; // Zýplama yüksekliði
     public float jumpDuration = 0.002f; // Zýplama süresi (yukarý + aþaðý toplam)
 
+    [Header("Idle")]
+    private Tween xTween;
+    private Tween zTween;
+    [SerializeField] private float xTarget = -30f;
+    [SerializeField] private float zFrom = 4f;
+    [SerializeField] private float zTo = -4f;
+    [SerializeField] private float duration = 1f;
+
     private Vector3 initialPosition;
 
     private Sequence movementSequence;
@@ -25,65 +34,67 @@ public class DOTMovement : MonoBehaviour
     public enum CharacterState { Idle, Move, Attack }
 
     private CharacterState currentState;
-    private Tween currentTween;
+    public CharacterState CurrentState => currentState;
+
+    Tween currentTween;
 
     void Start()
     {
         initialLocalPosition = CharModel.localPosition;
-        PlayRunAnimation();
+        //PlayIdleAnimation();
+        //PlayRunAnimation();
         StartCoroutine(FlipRoutine());
         //SetState(CharacterState.Idle);
 
         //print(gameObject.name + " : Character initialized in state: " + currentState);
     }
 
-    public void SetState(CharacterState newState)
-    {
-        //if (newState == currentState)
-        //    return;
+    //public void SetState(CharacterState newState)
+    //{
+    //    if (newState == currentState)
+    //        return;
 
-        // Önce önceki animasyonu iptal et
-        //currentTween?.Kill();
+    //    currentTween?.Kill();
 
-        currentState = newState;
+    //    currentState = newState;
 
-        switch (currentState)
-        {
-            case CharacterState.Idle:
-                //currentTween = PlayIdleAnimation();
-                break;
-            case CharacterState.Move:
-                //currentTween = PlayRunAnimation();
-                break;
-            case CharacterState.Attack:
-                currentTween = PlayAttackAnimation();
-                break;
-        }
-    }
+    //    switch (currentState)
+    //    {
+    //        case CharacterState.Idle:
+    //            currentTween = PlayIdleAnimation();
+    //            break;
+    //        case CharacterState.Move:
+    //            currentTween = PlayRunAnimation();
+    //            break;
+    //        case CharacterState.Attack:
+    //            //currentTween = PlayAttackAnimation();
+    //            break;
+    //    }
+    //}
 
     void PlayIdleAnimation()
     {
-        Debug.Log("Idle animation started");
+        // Ýstediðimiz baþlangýç z deðerini açýkça koy (ör. From gibi davranmasý için)
+        var e = transform.localEulerAngles;
+        e.z = zFrom;
+        transform.localEulerAngles = e;
 
-        Sequence idleSequence = DOTween.Sequence();
+        xTween = DOTween.To(
+            () => NormalizeAngle(transform.localEulerAngles.x),
+            x => { var ev = transform.localEulerAngles; ev.x = x; transform.localEulerAngles = ev; },
+            xTarget,
+            duration
+        ).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
 
-        //idleSequence.Join(transform.DORotate(new Vector3(-30f, 0f, 0f), 1f)
-        //                 .SetLoops(-1, LoopType.Yoyo)
-        //                 .SetEase(Ease.InOutSine)
-        //                 .SetRelative(false)); // Absolute hedef
-
-        //// Z rotasyonu: 10 ile -10 arasýnda gidip gelir
-        //idleSequence.Join(transform.DORotate(new Vector3(0f, 0f, -4f), 1f)
-        //         .From(new Vector3(0f, 0f, 4f))
-        //         .SetLoops(-1, LoopType.Yoyo)
-        //         .SetEase(Ease.InOutSine)
-        //         .SetRelative(false)); // Absolute hedef
-
-
-
-        //return scaleTween; // sadece biri kontrol için yeter
+        zTween = DOTween.To(
+            () => NormalizeAngle(transform.localEulerAngles.z),
+            z => { var ev = transform.localEulerAngles; ev.z = z; transform.localEulerAngles = ev; },
+            zTo,
+            duration
+        ).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
     }
 
+    float NormalizeAngle(float a) => Mathf.Repeat(a + 180f, 360f) - 180f;
 
     void PlayRunAnimation()
     {

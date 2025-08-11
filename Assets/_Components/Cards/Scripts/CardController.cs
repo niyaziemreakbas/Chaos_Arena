@@ -55,6 +55,8 @@ public class CardData{
 
     public event Action onStatsChanged;
 
+    public Color cardColor;
+
     public CardData(CardSO cardSO)
     {
         spawnCount = cardSO.spawnCount;
@@ -66,6 +68,7 @@ public class CardData{
         movementSpeed = cardSO.movementSpeed;
         attackSpeed = cardSO.attackSpeed;
         cardImage = cardSO.cardImage;
+        cardColor = cardSO.cardColor;
     }
 
     public void UpgradeStats()

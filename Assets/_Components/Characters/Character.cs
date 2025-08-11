@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Character : MonoBehaviour
 {
@@ -10,9 +11,94 @@ public class Character : MonoBehaviour
     [SerializeField] float moveSpeed = 3f;
     [SerializeField] float arriveThreshold = 0.1f;
 
+    [SerializeField] private Transform currentTarget;
+
     private int currentTargetIndex = 0;
 
-    void Update()
+    private DOTMovement dotMovement;
+
+    private Vector2 currentTargetPos;
+    private bool isMoving = false;
+
+    private void Awake()
+    {
+        dotMovement = GetComponent<DOTMovement>();
+
+
+    }
+
+    private void Start()
+    {
+        //MoveToTarget(currentTarget.position); // Baþlangýçta hedefe doðru hareket et
+    }
+
+    //void Update()
+    //{
+    //    if (currentTargetPos != null)
+    //    {
+    //        MoveTowardCurrentTarget();
+    //    }
+    //    if(isMoving)
+    //    {
+    //        dotMovement.SetState(DOTMovement.CharacterState.Move);
+    //    }
+    //    else
+    //    {
+    //        dotMovement.SetState(DOTMovement.CharacterState.Idle);
+    //    }
+    //    print
+    //    // PatrolMovement();
+    //}
+
+    //public GameObject GetClosestTarget()
+    //{
+    //    var mgr = CharacterManager.Instance;
+    //    if (targets == null || targets.Count == 0)
+    //        return null;
+
+    //    GameObject closest = null;
+    //    float closestDistance = Mathf.Infinity;
+    //    Vector2 currentPosition = transform.position;
+
+    //    foreach (GameObject target in targets)
+    //    {
+    //        if (target == null) continue;
+
+    //        float distance = Vector2.Distance(currentPosition, target.transform.position);
+    //        if (distance < closestDistance)
+    //        {
+    //            closestDistance = distance;
+    //            closest = target;
+    //        }
+    //    }
+
+    //    return closest;
+    //}
+
+
+    public void MoveToTarget(Vector2 targetPosition)
+    {
+        currentTargetPos = targetPosition;
+        isMoving = true;
+    }
+
+    private void MoveTowardCurrentTarget()
+    {
+        Vector2 currentPosition = new Vector2(transform.position.x, transform.position.y);
+        Vector2 direction = (currentTargetPos - currentPosition).normalized;
+        Vector2 newPosition = currentPosition + direction * moveSpeed * Time.deltaTime;
+
+        transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
+
+        float distance = Vector2.Distance(currentPosition, currentTargetPos);
+        if (distance <= arriveThreshold)
+        {
+            isMoving = false; // Hedefe ulaþýldý
+            print($"Character {characterData.charName} reached target at {currentTargetPos}.");
+        }
+    }
+
+    private void PatrolMovement()
     {
         if (patrolPoints == null || patrolPoints.Count == 0) return;
 
@@ -51,8 +137,6 @@ public class Character : MonoBehaviour
     {
         characterData = data;
     }
-
-
 }
 public class CharacterData
 {

@@ -4,19 +4,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UpgradeCardController : MonoBehaviour, IPointerClickHandler
+public class UpgradeCard : MonoBehaviour, IPointerClickHandler
 {
-    public static event Action<UpgradeCardData> OnUpgradeCardClicked;
+    public static event Action<UpgradeCardData, Owner> OnUpgradeCardClicked;
 
     UpgradeCardView upgradeCardView;
 
     UpgradeCardData upgradeCardData;
     public UpgradeCardData UpgradeCardData => upgradeCardData;
 
+    Owner playerOwner;
+
     private void Awake()
     {
         upgradeCardView = GetComponent<UpgradeCardView>();
-        upgradeCardView.SetUpgradeCard(upgradeCardData);
+        //upgradeCardView.SetUpgradeCard(upgradeCardData);
+    }
+
+    private void Start()
+    {
+        playerOwner = OwnerManager.Instance.PlayerOwner;
+        //if (playerOwner == null)
+        //{
+        //    Debug.LogError("Player owner is not set in UpgradeCard!");
+        //}
     }
 
     public void SetUpgradeCard(UpgradeCardData upgradeCardData)
@@ -31,7 +42,7 @@ public class UpgradeCardController : MonoBehaviour, IPointerClickHandler
         print("UpgradeCardController: OnPointerClick called for " + upgradeCardData?.charName);
         if (upgradeCardData != null)
         {
-            OnUpgradeCardClicked?.Invoke(upgradeCardData);
+            OnUpgradeCardClicked?.Invoke(upgradeCardData, playerOwner);
         }
         else
         {

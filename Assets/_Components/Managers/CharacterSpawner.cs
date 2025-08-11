@@ -1,80 +1,38 @@
+using FurtleGame.Singleton;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CharacterSpawner : MonoBehaviourSingleton<CharacterSpawner>
+public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
 {
     [SerializeField] private float spawnInterval = 3f;
     [SerializeField] private GameObject charPrefab;
 
     [Header("Reposition Settings")]
     [SerializeField] private int maxUnitsPerRow = 6;
-    [SerializeField] private float spacingX = 2f;
+    [SerializeField] private float spacingX = 0.2f;
     [SerializeField] private float spacingY = 3f;
-
-    [Header("Player Spawn Origins")]
-    [SerializeField] private Transform playerSpawnOrigin;
-    [SerializeField] private Transform playerChars;
-
-    [Header("Enemy Spawn Origins")]
-    [SerializeField] private Transform enemySpawnOrigin;
-    [SerializeField] private Transform enemyChars;
-
 
     private void OnEnable()
     {
-        CardUpgradeManager.OnSpawnCharacter += SpawnCharacter;
+        UpgradeManager.OnSpawnCharacter += SpawnCharacter;
     }
 
     private void OnDisable()
     {
-        CardUpgradeManager.OnSpawnCharacter -= SpawnCharacter;
+        UpgradeManager.OnSpawnCharacter -= SpawnCharacter;
     }
 
-    //protected override void SingletonStarted()
-    //{
-    //    base.SingletonStarted();
-    //}
-
-    //private void Start()
-    //{
-    //    StartCoroutine(SpawnRoutine());
-    //}
-
-    private IEnumerator SpawnRoutine()
+    public void SpawnCharacter(CharacterData data, int count, Owner owner)
     {
-        print("CharacterSpawner: Starting spawn routine...");
-        while (true)
-        {
-            yield return new WaitForSeconds(spawnInterval);
-
-            print("sayýsýý :: " + CharacterManager.Instance.SelectedCharacters.Count);
-
-            if (CharacterManager.Instance.SelectedCharacters.Count == 0)
-                continue;
-
-            CharacterData randomChar = CharacterManager.Instance.SelectedCharacters[Random.Range(0, CharacterManager.Instance.SelectedCharacters.Count)];
-            int count = Random.Range(1, 4);
-
-            SpawnCharacter(randomChar, count);
-            RepositionCharacters();
-        }
-    }
-
-    public void SpawnCharacter(CharacterData data, int count)
-    {
-        var mgr = CharacterManager.Instance;
+        var mgr = owner.UnitRegistry;
         string key = data.charName;
-
-        // Renk kaydý
-        if (!mgr.UnitColors.ContainsKey(key))
-            mgr.UnitColors[key] = new Color(Random.value, Random.value, Random.value);
 
         // Sýra kaydý
         if (!mgr.CharacterOrder.Exists(c => c.charName == key))
         {
-            int insertIndex = GetOrdinalIndex(data);
+            int insertIndex = GetOrdinalIndex(data, owner);
             mgr.CharacterOrder.Insert(insertIndex, data);
         }
 
@@ -86,7 +44,7 @@ public class CharacterSpawner : MonoBehaviourSingleton<CharacterSpawner>
         if (!mgr.UnitParents.ContainsKey(key))
         {
             GameObject parentObj = new GameObject(key + "Group");
-            parentObj.transform.parent = playerChars; // istersen sahne kökü yapabilirsin
+            parentObj.transform.parent = owner.charsRoot; // istersen sahne kökü yapabilirsin
             mgr.UnitParents[key] = parentObj.transform;
         }
 
@@ -95,8 +53,10 @@ public class CharacterSpawner : MonoBehaviourSingleton<CharacterSpawner>
         {
             GameObject obj = Instantiate(charPrefab);
             obj.GetComponent<Character>().SetCharData(data);
+            Transform child = obj.transform.Find("CharModel");
+            child.GetComponent<SpriteRenderer>().sprite = data.charImage;
             obj.name = key;
-            obj.GetComponent<SpriteRenderer>().color = mgr.UnitColors[key];
+            //obj.GetComponent<SpriteRenderer>().color = mgr.UnitColors[key];
 
             // Parent’a ata
             obj.transform.parent = mgr.UnitParents[key];
@@ -104,14 +64,14 @@ public class CharacterSpawner : MonoBehaviourSingleton<CharacterSpawner>
             mgr.UnitGroups[key].Add(obj);
         }
 
-        RepositionCharacters();
+        RepositionCharacters(owner);
 
-        print($"CharacterSpawner: Spawned {count} units of {key} at {mgr.UnitParents[key].position} with color {mgr.UnitColors[key]}");
+        //print($"CharacterSpawner: Spawned {count} units of {key} at {mgr.UnitParents[key].position} with color {mgr.UnitColors[key]}");
     }
 
-    public void RepositionCharacters()
+    public void RepositionCharacters(Owner owner)
     {
-        var mgr = CharacterManager.Instance;
+        var mgr = owner.UnitRegistry;
 
         foreach (var kvp in mgr.UnitGroups)
         {
@@ -119,7 +79,7 @@ public class CharacterSpawner : MonoBehaviourSingleton<CharacterSpawner>
             List<GameObject> group = kvp.Value;
 
             int groupYIndex = mgr.CharacterOrder.FindIndex(c => c.charName == key);
-            float baseY = playerSpawnOrigin.position.y + groupYIndex * spacingY;
+            float baseY = owner.spawnOrigin.position.y + groupYIndex * spacingY;
 
             for (int i = 0; i < group.Count; i++)
             {
@@ -144,15 +104,15 @@ public class CharacterSpawner : MonoBehaviourSingleton<CharacterSpawner>
                 float xOffset = spacingX * (indexInSide); // +1 to avoid spawnOrigin overlap
                 xOffset = placeLeft ? -xOffset : xOffset;
 
-                Vector3 newPos = new Vector3(playerSpawnOrigin.position.x + xOffset, baseY, 0);
+                Vector3 newPos = new Vector3(owner.spawnOrigin.position.x + xOffset, baseY, 0);
                 group[i].transform.position = newPos;
             }
         }
     }
 
-    public int GetOrdinalIndex(CharacterData charData)
+    public int GetOrdinalIndex(CharacterData charData, Owner owner)
     {
-        var mgr = CharacterManager.Instance;
+        var mgr = owner.UnitRegistry;
 
         for (int i = 0; i < mgr.CharacterOrder.Count; i++)
         {
@@ -164,6 +124,4 @@ public class CharacterSpawner : MonoBehaviourSingleton<CharacterSpawner>
 
         return mgr.CharacterOrder.Count;
     }
-
-
 }

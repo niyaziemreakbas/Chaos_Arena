@@ -23,4 +23,6 @@ public class CardSO : ScriptableObject
     public int spawnCount;
 
     public Sprite cardImage;
+
+    public Color cardColor;
 }

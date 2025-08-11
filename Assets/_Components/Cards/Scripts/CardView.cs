@@ -35,6 +35,8 @@ public class CardView : MonoBehaviour
 
         range.text = cardData.range < 2 ? "Melee" : "Ranged";
         cardImage.sprite = cardData.cardImage;
+
+        GetComponent<Image>().color = cardData.cardColor;
     }
 }
 
