@@ -7,8 +7,17 @@ public class Owner : MonoBehaviour
 {
     public event Action<Owner> OnUpgradePerformed;
 
-    public string ownerName;
+    private bool isLosedLastFight = false;
+    public bool IsLosedLastFight => isLosedLastFight;
+
+    private int fightHealth = 3;
+    public int FightHealth => fightHealth;
+
+    public string OwnerName;
     public Color teamColor;
+
+    private Owner enemyOwner;
+    public Owner EnemyOwner => enemyOwner;
 
     protected bool isUpward;
     public bool IsUpward => isUpward;
@@ -49,7 +58,7 @@ public class Owner : MonoBehaviour
                 Debug.LogWarning("Unhandled game state!");
                 break;
         }
-        print(unitRegistry.SpawnedCharacters.Count + " current spawned char Count for owner: " + ownerName);
+       // print(unitRegistry.SpawnedCharacters.Count + " current spawned char Count for owner: " + OwnerName);
 
     }
 
@@ -61,9 +70,36 @@ public class Owner : MonoBehaviour
         unitRegistry = new UnitRegistry();
     }
 
+    public void Reset()
+    {
+        print($"Resetting owner {OwnerName}.");
+        upgradeCount = 0;
+        CharacterSpawner.Instance.RepositionCharacters(this);
+        CharacterSpawner.Instance.ActivateAllIfInactive(this.unitRegistry.SpawnedCharacters);
+    }
+
     public void OnUpgradePerformedFunc() { 
       //  print($"Upgrade performed by {ownerName}. Current upgrade count: {upgradeCount}");
         upgradeCount++;
         OnUpgradePerformed?.Invoke(this);
+    }
+
+    public void OnLoseFightState()
+    {
+        isLosedLastFight = true;
+        fightHealth--;
+
+        print($"{OwnerName} lost the fight!");
+        if (fightHealth <= 0)
+        {
+            GameSceneManager.OnGameEnded?.Invoke();
+        }
+
+        //Handle animations on owners which losing game
+    }
+
+    public void SetEnemyOwner(Owner owner)
+    {
+        enemyOwner = owner;
     }
 }

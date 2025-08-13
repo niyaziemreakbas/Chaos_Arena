@@ -1,15 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CardSelectManager : MonoBehaviour
+public class GameSceneManager : MonoBehaviour
 {
+    public static Action OnGameEnded;
+
+    private void OnEnable()
+    {
+        OnGameEnded += HandleGameEnded;
+    }
+
+
     [SerializeField] private GameObject inventory;
+
+    private void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 
     public void ApplyCards()
     {
         DataManager.Instance.SetPlayerSelectedData(GetCardsAsList());
+
 
         SceneManager.LoadScene("CharDevScene");
     }
@@ -27,5 +42,10 @@ public class CardSelectManager : MonoBehaviour
             }
         }
         return selectedCards;
+    }
+
+    private void HandleGameEnded()
+    {
+        SceneManager.LoadScene("CardDevScene");
     }
 }

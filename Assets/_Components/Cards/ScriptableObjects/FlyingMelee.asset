@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: FlyingMelee
   m_EditorClassIdentifier: 
   cardName: FlyingMelee
-  health: 100
-  damage: 80
+  health: 120
+  damage: 30
   range: 1
-  movementSpeed: 20
+  movementSpeed: 1
   attackSpeed: 5
   priorityLevel: 2
-  spawnCount: 2
+  spawnCount: 4
+  attackCooldown: 1.5
   cardImage: {fileID: 21300000, guid: d72f52a258161d24db3e89f83ca1cfce, type: 3}
   cardColor: {r: 1, g: 0.26981127, b: 0.44132182, a: 0.47058824}
+  charPrefab: {fileID: 1981279886582809382, guid: 8d1805e7d3a27644fb12d29a2deec078, type: 3}

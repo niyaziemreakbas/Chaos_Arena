@@ -4,10 +4,16 @@ using System;
 using System.Collections;
 using static UnityEngine.GraphicsBuffer;
 
-public class DOTMovement : MonoBehaviour
+public class AnimationController : MonoBehaviour
 {
+    [Header("Sword Animation")]
+    [SerializeField] Transform swordModel;
+    [SerializeField] float swingDuration = 0.3f;
+    [SerializeField] float swingAngle = 90f;
+    private Quaternion initialRotation;
+
     [Header("Character Model")]
-    [SerializeField] Transform CharModel; 
+    Transform charModel;
     Vector2 initialLocalPosition;
 
     [Header("Flip")]
@@ -40,10 +46,17 @@ public class DOTMovement : MonoBehaviour
 
     void Start()
     {
-        initialLocalPosition = CharModel.localPosition;
+
+        charModel = GetComponent<Character>().CharModel;
+
+        initialLocalPosition = charModel.localPosition;
+        initialRotation = swordModel.localRotation;
+
+
+
         //PlayIdleAnimation();
         //PlayRunAnimation();
-        StartCoroutine(FlipRoutine());
+        //StartCoroutine(SwordSwing());
         //SetState(CharacterState.Idle);
 
         //print(gameObject.name + " : Character initialized in state: " + currentState);
@@ -100,7 +113,7 @@ public class DOTMovement : MonoBehaviour
     {
 
         // Yukarý zýplama ve geri dönme hareketi, loop ile devam eder
-        CharModel.DOLocalMoveY(initialLocalPosition.y + jumpHeight, jumpDuration / 2)
+        charModel.DOLocalMoveY(initialLocalPosition.y + jumpHeight, jumpDuration / 2)
             .SetLoops(-1, LoopType.Yoyo)
             .SetEase(Ease.OutQuad);
 
@@ -126,26 +139,23 @@ public class DOTMovement : MonoBehaviour
                 float targetYRotation = isLookingRight ? 0f : 180f;
 
                 // Dönüþ animasyonu
-                CharModel.DORotate(new Vector3(0f, targetYRotation, 0f), 0.5f)
+                charModel.DORotate(new Vector3(0f, targetYRotation, 0f), 0.5f)
                     .SetEase(Ease.InOutSine);
             }
         }
     }
 
-
-
-    Tween PlayAttackAnimation()
+    public IEnumerator SwordSwing()
     {
-        // Ýleri hafif hamle, sonra geri dön
-        float attackDistance = 0.5f;
-        float attackDuration = 0.2f;
+        yield return new WaitForSeconds(0.1f); // Küçük bir gecikme ekleyelim
+                                               // Ýlk açýdan -swingAngle/2'ye, sonra +swingAngle/2'ye ve tekrar baþlangýca dön
+        Sequence swingSequence = DOTween.Sequence();
 
-        Sequence attackSequence = DOTween.Sequence();
-
-        attackSequence.Append(transform.DOMoveX(transform.position.x + attackDistance, attackDuration).SetEase(Ease.OutQuad));
-        attackSequence.Append(transform.DOMoveX(transform.position.x, attackDuration).SetEase(Ease.InQuad));
-
-        // Tek seferlik, tamamlandýðýnda otomatik durur
-        return attackSequence;
+        swingSequence.Append(swordModel.transform.DOLocalRotate(new Vector3(0, 0, -swingAngle / 2), swingDuration / 2)
+            .SetEase(Ease.OutQuad));
+        swingSequence.Append(swordModel.transform.DOLocalRotate(new Vector3(0, 0, swingAngle / 2), swingDuration)
+            .SetEase(Ease.InOutQuad));
+        swingSequence.Append(swordModel.transform.DOLocalRotateQuaternion(initialRotation, swingDuration / 2)
+            .SetEase(Ease.InQuad));
     }
 }

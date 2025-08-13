@@ -25,8 +25,6 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
     // 
     public void HandleCardUpgrades(UpgradeCardData upgradeCardData, Owner owner)
     {
-        print($"Handling upgrade for {upgradeCardData.charName} of type {upgradeCardData.upgradeType} for owner {owner.ownerName}");
-
         switch (upgradeCardData.upgradeType)
         {
             case UpgradeType.Doubler:

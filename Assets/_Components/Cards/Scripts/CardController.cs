@@ -51,11 +51,15 @@ public class CardData{
 
     public int spawnCount;
 
+    public float attackCooldown;
+
     public Sprite cardImage;
 
     public event Action onStatsChanged;
 
     public Color cardColor;
+
+    public GameObject charPrefab;
 
     public CardData(CardSO cardSO)
     {
@@ -69,6 +73,8 @@ public class CardData{
         attackSpeed = cardSO.attackSpeed;
         cardImage = cardSO.cardImage;
         cardColor = cardSO.cardColor;
+        charPrefab = cardSO.charPrefab;
+        attackCooldown = cardSO.attackCooldown;
     }
 
     public void UpgradeStats()

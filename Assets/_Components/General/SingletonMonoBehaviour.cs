@@ -16,11 +16,11 @@ namespace FurtleGame.Singleton
                     {
                         instance = FindObjectOfType(typeof(T)) as T;
 
-                        if (!instance)
-                        {
-                            GameObject go = new GameObject(typeof(T).ToString());
-                            instance = go.AddComponent<T>();
-                        }
+                        //if (!instance)
+                        //{
+                        //    GameObject go = new GameObject(typeof(T).ToString());
+                        //    instance = go.AddComponent<T>();
+                        //}
                     }
 
                     return instance;

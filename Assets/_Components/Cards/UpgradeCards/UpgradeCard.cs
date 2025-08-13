@@ -39,7 +39,6 @@ public class UpgradeCard : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        print("UpgradeCardController: OnPointerClick called for " + upgradeCardData?.charName);
         if (upgradeCardData != null)
         {
             OnUpgradeCardClicked?.Invoke(upgradeCardData, playerOwner);

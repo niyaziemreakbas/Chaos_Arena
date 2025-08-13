@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8038232648274617759
 Transform:
   m_ObjectHideFlags: 0
@@ -43,7 +43,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2352158758127364187, guid: 0c46f6b3318ac084e9e745724c2e57cc, type: 3}
       propertyPath: m_Name
-      value: Enemy
+      value: EnemyOwner
       objectReference: {fileID: 0}
     - target: {fileID: 7872285930557498080, guid: 0c46f6b3318ac084e9e745724c2e57cc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -105,7 +105,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 46310619825946897, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
       propertyPath: m_Name
-      value: Player
+      value: PlayerOwner
       objectReference: {fileID: 0}
     - target: {fileID: 8014611315592032606, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
       propertyPath: m_LocalPosition.x

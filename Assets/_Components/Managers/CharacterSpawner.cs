@@ -41,7 +41,7 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
         if (!mgr.UnitGroups.ContainsKey(key))
             mgr.UnitGroups[key] = new List<GameObject>();
 
-        // Parent kontrolü ve oluþturma
+        //// Parent kontrolü ve oluþturma
         if (!mgr.UnitParents.ContainsKey(key))
         {
             GameObject parentObj = new GameObject(key + "Group");
@@ -49,16 +49,19 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
             mgr.UnitParents[key] = parentObj.transform;
         }
 
-
-
         // Karakterleri oluþtur
         for (int i = 0; i < count; i++)
         {
-            GameObject obj = Instantiate(charPrefab);
-            obj.GetComponent<Character>().SetCharData(data);
-            Transform child = obj.transform.Find("CharModel");
-            child.GetComponent<SpriteRenderer>().sprite = data.charImage;
-            obj.name = key;
+            GameObject obj = Instantiate(data.charPrefab);
+
+            int randomNumber = Random.Range(100, 1000);
+
+            // Objenin ismine ekle
+            obj.name = $"{data.charPrefab.name}_{randomNumber}";
+
+            obj.GetComponent<Character>().Initialize(OwnerManager.Instance.GetEnemyOwner(owner), owner, data);
+
+            obj.tag = owner.OwnerName;
 
             // Parent’a ata
             obj.transform.parent = mgr.UnitParents[key];
@@ -66,6 +69,7 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
             mgr.UnitGroups[key].Add(obj);
 
             mgr.SpawnedCharacters.Add(obj);
+
         }
 
         RepositionCharacters(owner);
@@ -154,8 +158,9 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
     {
         foreach (var obj in objects)
         {
-            if (obj != null && !obj.activeSelf)
+            if (obj != null && !obj.activeInHierarchy)
             {
+                print($"Activating {obj.name}");
                 obj.SetActive(true);
             }
         }

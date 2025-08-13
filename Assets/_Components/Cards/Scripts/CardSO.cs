@@ -22,7 +22,11 @@ public class CardSO : ScriptableObject
 
     public int spawnCount;
 
+    public float attackCooldown;
+
     public Sprite cardImage;
 
     public Color cardColor;
+
+    public GameObject charPrefab;
 }

@@ -34,6 +34,11 @@ public class PlayerOwner : Owner
     protected override void HandleFightState()
     {
         OnFightViewHandle?.Invoke();
-        upgradeCount = 0; // Reset upgrade count after fight
+        upgradeCount = 0;
+        
+        foreach (var character in unitRegistry.SpawnedCharacters)
+        {
+            character.GetComponent<Character>().OnFightStateStarted();
+        }
     }
 }

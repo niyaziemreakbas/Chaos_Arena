@@ -16,6 +16,9 @@ public class OwnerManager : SingletonMonoBehaviour<OwnerManager>
     Owner playerOwner;
     public Owner PlayerOwner => playerOwner;
 
+    Owner enemyOwner;
+    public Owner EnemyOwner => enemyOwner;
+
     protected override void ChildAwake()
     {
         for (int i = 0; i < OwnerContainer.transform.childCount; i++)
@@ -29,6 +32,10 @@ public class OwnerManager : SingletonMonoBehaviour<OwnerManager>
                 if (child.name == "PlayerOwner")
                 {
                     playerOwner = ownerComponent;
+                }
+                else if (child.name == "EnemyOwner")
+                {
+                    enemyOwner = ownerComponent;
                 }
             }
             else
@@ -47,7 +54,24 @@ public class OwnerManager : SingletonMonoBehaviour<OwnerManager>
     {
         OwnerContainer.SetActive(true);
 
-        ////Instantiate(playerPrefab, gameObject.transform);
-        //Instantiate(AIPrefab, gameObject.transform);
+        foreach (var owner in owners)
+        {
+            owner.SetEnemyOwner(GetEnemyOwner(owner)); 
+        }
+    }
+
+    public Owner GetEnemyOwner(Owner owner)
+    {
+        if (owner == null) return null;
+        foreach (var o in owners)
+        {
+            if (o.OwnerName != owner.OwnerName)
+            {
+                //Return the owner who is not the same as the given owner
+                return o;
+            }
+        }
+        Debug.LogWarning("No enemy owner found for the given owner.");
+        return null;
     }
 }

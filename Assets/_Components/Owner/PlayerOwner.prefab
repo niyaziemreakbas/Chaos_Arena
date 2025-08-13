@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4164389fd138174f8fcfa0b1a5f19f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownerName: Player232
-  teamColor: {r: 0, g: 0, b: 0, a: 0}
+  OwnerName: Player
+  teamColor: {r: 0, g: 0.029557705, b: 1, a: 1}
   spawnOrigin: {fileID: 2261461214821474112}
   charsRoot: {fileID: 3942307810611431000}
 --- !u!1 &2135562239276327988

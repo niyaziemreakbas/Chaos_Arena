@@ -27,6 +27,11 @@ public class AIOwner : Owner
 
     protected override void HandleFightState()
     {
+        foreach (var character in unitRegistry.SpawnedCharacters)
+        {
+            character.GetComponent<Character>().OnFightStateStarted();
+        }
         upgradeCount = 0; // Reset upgrade count after fight
     }
+    
 }

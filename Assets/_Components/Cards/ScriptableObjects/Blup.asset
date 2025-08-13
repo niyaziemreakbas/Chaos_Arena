@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a0551ec95fabbc40a9199be3c0b591f, type: 3}
-  m_Name: FlyingDino
+  m_Name: Blup
   m_EditorClassIdentifier: 
   cardName: FlyingRanged
   health: 100
-  damage: 80
-  range: 10
-  movementSpeed: 20
+  damage: 20
+  range: 4
+  movementSpeed: 1
   attackSpeed: 5
   priorityLevel: 3
-  spawnCount: 4
+  spawnCount: 3
+  attackCooldown: 1
   cardImage: {fileID: 21300000, guid: 644e6c65912ffb7479ba28f483051df9, type: 3}
   cardColor: {r: 0.6320754, g: 1, b: 0.6353718, a: 0.47058824}
+  charPrefab: {fileID: 6743873009203857186, guid: adab78f5a28b06a46b04124e05dd1d2b, type: 3}
