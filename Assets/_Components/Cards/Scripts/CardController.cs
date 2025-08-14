@@ -47,7 +47,7 @@ public class CardData{
 
     public int movementSpeed;
 
-    public int attackSpeed;
+    //public int attackSpeed;
 
     public int spawnCount;
 
@@ -70,15 +70,18 @@ public class CardData{
         damage = cardSO.damage;
         range = cardSO.range;
         movementSpeed = cardSO.movementSpeed;
-        attackSpeed = cardSO.attackSpeed;
+       // attackSpeed = cardSO.attackSpeed;
         cardImage = cardSO.cardImage;
         cardColor = cardSO.cardColor;
         charPrefab = cardSO.charPrefab;
         attackCooldown = cardSO.attackCooldown;
     }
 
+    // Upgrade Logic for CardData
     public void UpgradeStats()
     {
+        // Gold cost or other requirements can be added here
+
         health += 10;
         damage += 5;
 

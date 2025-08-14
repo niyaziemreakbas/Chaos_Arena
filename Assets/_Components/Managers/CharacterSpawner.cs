@@ -12,7 +12,7 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
     [Header("Reposition Settings")]
     // Maybe we can make maxUnits for every chars in the future
     [SerializeField] private int maxUnitsPerRow = 6;
-    [SerializeField] private float spacingX = 0.2f;
+    private float spacingX = 0.5f;
     [SerializeField] private float spacingY = 3f;
 
     private void OnEnable()
@@ -160,7 +160,6 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
         {
             if (obj != null && !obj.activeInHierarchy)
             {
-                print($"Activating {obj.name}");
                 obj.SetActive(true);
             }
         }

@@ -8,13 +8,12 @@ public class GameSceneManager : MonoBehaviour
 {
     public static Action OnGameEnded;
 
+    [SerializeField] private GameObject inventory;
+
     private void OnEnable()
     {
         OnGameEnded += HandleGameEnded;
     }
-
-
-    [SerializeField] private GameObject inventory;
 
     private void Start()
     {
@@ -24,7 +23,6 @@ public class GameSceneManager : MonoBehaviour
     public void ApplyCards()
     {
         DataManager.Instance.SetPlayerSelectedData(GetCardsAsList());
-
 
         SceneManager.LoadScene("CharDevScene");
     }

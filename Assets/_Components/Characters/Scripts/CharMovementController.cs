@@ -14,8 +14,6 @@ public class CharMovementController : MonoBehaviour
 
     private CharAttackController attackController;
 
-
-
     public void Initialize(Character character, Owner teamOwner, Owner enemyOwner)
     {
         this.character = character;
@@ -78,7 +76,6 @@ public class CharMovementController : MonoBehaviour
 
     private void HandleIdle()
     {
-        //print($"Character {character.name} is idle");
         SetClosestTarget();
         if(currentTarget != null && currentTarget.activeInHierarchy)
         {

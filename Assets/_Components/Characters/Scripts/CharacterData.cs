@@ -1,6 +1,5 @@
 using UnityEngine;
 
-//[System.Serializable]
 public class CharacterData
 {
     public Color charColor;
@@ -21,7 +20,7 @@ public class CharacterData
 
     public int movementSpeed;
 
-    public int attackSpeed;
+    //public int attackSpeed;
 
     public int spawnCount;
 
@@ -38,10 +37,32 @@ public class CharacterData
         damage = cardData.damage;
         range = cardData.range;
         movementSpeed = cardData.movementSpeed;
-        attackSpeed = cardData.attackSpeed;
+        //attackSpeed = cardData.attackSpeed;
         charImage = cardData.cardImage;
         charColor = cardData.cardColor;
         charPrefab = cardData.charPrefab;
         attackCooldown = cardData.attackCooldown;
+    }
+
+    public CharacterData Clone()
+    {
+        return new CharacterData(this);
+    }
+
+    public CharacterData(CharacterData other)
+    {
+        charColor = other.charColor;
+        charImage = other.charImage;
+        charLevel = other.charLevel;
+        charName = other.charName;
+        priorityLevel = other.priorityLevel;
+        health = other.health;
+        damage = other.damage;
+        range = other.range;
+        movementSpeed = other.movementSpeed;
+      //  attackSpeed = other.attackSpeed;
+        spawnCount = other.spawnCount;
+        attackCooldown = other.attackCooldown;
+        charPrefab = other.charPrefab;
     }
 }

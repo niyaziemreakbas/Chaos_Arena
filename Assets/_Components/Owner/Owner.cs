@@ -72,14 +72,21 @@ public class Owner : MonoBehaviour
 
     public void Reset()
     {
-        print($"Resetting owner {OwnerName}.");
+        //print($"Resetting owner {OwnerName}.");
+
+
         upgradeCount = 0;
+        //if (isLosedLastFight)
+        //{
+        //    upgradeCount--;
+        //}
         CharacterSpawner.Instance.RepositionCharacters(this);
         CharacterSpawner.Instance.ActivateAllIfInactive(this.unitRegistry.SpawnedCharacters);
     }
 
     public void OnUpgradePerformedFunc() { 
       //  print($"Upgrade performed by {ownerName}. Current upgrade count: {upgradeCount}");
+        print($"{OwnerName} performed an upgrade. Current upgrade count: {upgradeCount}");
         upgradeCount++;
         OnUpgradePerformed?.Invoke(this);
     }

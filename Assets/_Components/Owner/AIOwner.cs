@@ -14,15 +14,11 @@ public class AIOwner : Owner
     {
         unitRegistry.SelectedCharacters = DataManager.Instance.RandomlySelectDeck();
         isUpward = false; // Assuming AI is always downward for now
-        //foreach (var character in unitRegistry.SelectedCharacters)
-        //{
-        //    print("AIOWner : " + character.charName);
-        //}
     }
 
     protected override void HandleUpgradeState()
     {
-        UpgradeManager.Instance.HandleCardUpgrades(UpgradeManager.Instance.SelectRandomUpgradeCard(this), this);
+        UpgradeManager.Instance.HandleCardUpgrades(UpgradeManager.Instance.ReturnRandomUpgradeCard(this), this);
     }
 
     protected override void HandleFightState()

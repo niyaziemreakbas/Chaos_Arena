@@ -16,13 +16,9 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
 
     List<Owner> owners = new List<Owner>();
 
-    GameObject OwnerContainer;
-
     private int maxUpgradeCount = 3;
 
     private int currentUpgradeCount = 0;
-
-    private bool canUpgrade;
 
     private void OnEnable()
     {
@@ -111,32 +107,25 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
             //print($"Checking owner: {owner.ownerName} with upgrade count: {owner.UpgradeCount} against current upgrade count: {currentUpgradeCount}");
             if (owner.UpgradeCount != currentUpgradeCount)
             {
-                canUpgrade = false;
                 return false;
             }
         }
-        canUpgrade = true;
         return true;
     }
 
     private void HandleOwnerUpgraded(Owner owner)
     {
-        //print($"Owner {owner.ownerName} performed an upgrade. Current upgrade count: {owner.UpgradeCount}");
-
         // Owner upgrade performed but not all handled yet.
         if (!DecideCanUpgrade())
         {
-            //Debug.Log("Cannot upgrade yet, waiting for all owners to reach the same upgrade count.");
             return;
         }
 
         // All owners have performed their upgrades and reached the same count now we increment the upgrade count.
         if (currentUpgradeCount >= maxUpgradeCount)
         {
-           // print("Max upgrade count reached, switching to fight state.");
             ChangeState(GameState.Fight);
             FightManager.Instance.ResetFightState(); // Reset fight state for the new fight
-            //StartCoroutine(HandleTempFightState());
         }
 
         //print($"All owners have performed their upgrades. Upgrade count increasing...Current upgrade count: {currentUpgradeCount}");
@@ -147,6 +136,13 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
     {
         foreach (var owner in owners)
         {
+            if (owner.IsLosedLastFight)
+            {
+                //owner.OnUpgradePerformedFunc(); // Kaybedene ekstra upgrade
+                owner.HandleState(currentState);
+                print($"{owner.OwnerName} gets extra upgrade for losing last fight!");
+            }
+
             owner.HandleState(currentState);
         }
 
@@ -155,13 +151,6 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
             currentUpgradeCount++;
         }
     }
-
-    //private IEnumerator HandleTempFightState()
-    //{
-    //    yield return new WaitForSeconds(5f);
-    //    currentUpgradeCount = 0; // Reset upgrade count after fight state
-    //    ChangeState(GameState.Upgrade);
-    //}
 
     private void ResetOwners()
     {

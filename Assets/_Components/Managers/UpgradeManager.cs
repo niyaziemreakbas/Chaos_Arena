@@ -9,8 +9,7 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
 {
     public static Action<CharacterData, int, Owner> OnSpawnCharacter;
 
-    GameState currentGameState = GameState.Upgrade;
-
+    [SerializeField] UpgradeWeightConfig upgradeWeightConfig;
 
     private void OnEnable()
     {
@@ -57,46 +56,97 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
     }
 
     // Selects an upgrade type based on character data
-    public UpgradeType SelectUpgradeType(CharacterData charData, Owner owner)
+    public UpgradeType SelectRandomUpgradeType(CharacterData charData, Owner owner)
     {
-        List<UpgradeType> availableOptions = new List<UpgradeType>();
+        List<(UpgradeType type, float weight)> availableOptions = new();
 
         if (CheckDoubleValidity(charData, owner))
-            availableOptions.Add(UpgradeType.Doubler);
-
-        // Spawner her zaman ekleniyor gibi görünüyor
-        availableOptions.Add(UpgradeType.Spawner);
+            availableOptions.Add((UpgradeType.Doubler, upgradeWeightConfig.GetWeight(UpgradeType.Doubler)));
 
         if (CheckUpgradeValidity(charData, owner))
-            availableOptions.Add(UpgradeType.Upgrader);
+            availableOptions.Add((UpgradeType.Upgrader, upgradeWeightConfig.GetWeight(UpgradeType.Upgrader)));
+
+        availableOptions.Add((UpgradeType.Spawner, upgradeWeightConfig.GetWeight(UpgradeType.Spawner)));
 
         if (availableOptions.Count == 0)
-        {
-           // Debug.LogWarning("No available upgrade options. Defaulting to Spawner.");
             return UpgradeType.Spawner;
+
+        // Adds weights to totalWeight which is in the available options
+        float totalWeight = 0;
+        foreach (var option in availableOptions)
+            totalWeight += option.weight;
+
+        float randomValue = UnityEngine.Random.value * totalWeight;
+        float cumulative = 0;
+
+        foreach (var option in availableOptions)
+        {
+            cumulative += option.weight;
+            if (randomValue <= cumulative)
+                return option.type;
         }
 
-//        print(availableOptions.Count + " upgrade options available for character: " + charData.charName);
-        int randomIndex = UnityEngine.Random.Range(0, availableOptions.Count);
-
-       // print($"Selected upgrade type: {availableOptions[randomIndex]} for character: {charData.charName}");
-        return availableOptions[randomIndex];
+        print("Upgrade Type could not be selected, an error occurred.");
+        return availableOptions[0].type; // fallback
     }
 
     // Creates a random upgrade card based on the selected owner
-    public UpgradeCardData SelectRandomUpgradeCard(Owner owner)
+    public List<UpgradeCardData> ReturnRandomUpgradeList(Owner owner, int selectCount)
+    {
+        var selectedCards = new List<UpgradeCardData>();
+        var usedUpgradePairs = new Dictionary<string, HashSet<UpgradeType>>();
+
+        int attempts = 0;
+        int maxAttempts = selectCount * 5;
+
+        while (selectedCards.Count < selectCount && attempts < maxAttempts)
+        {
+            attempts++;
+
+            CharacterData charData = SelectRandomChar(owner);
+            UpgradeType upgradeType = SelectRandomUpgradeType(charData, owner);
+
+            // First selecting this char
+            if (!usedUpgradePairs.ContainsKey(charData.charName))
+                usedUpgradePairs[charData.charName] = new HashSet<UpgradeType>();
+
+            // If we have same pair continue trying
+            if (usedUpgradePairs[charData.charName].Contains(upgradeType))
+                continue;
+
+            // Save this combination
+            usedUpgradePairs[charData.charName].Add(upgradeType);
+
+            UpgradeCardData upgradeCardData = new UpgradeCardData
+            {
+                charImage = charData.charImage,
+                charName = charData.charName,
+                charData = charData,
+                upgradeType = upgradeType
+            };
+
+            selectedCards.Add(upgradeCardData);
+        }
+        return selectedCards;
+    }
+
+    // Returns a random upgrade card for the given owner
+    public UpgradeCardData ReturnRandomUpgradeCard(Owner owner)
     {
         CharacterData charData = SelectRandomChar(owner);
+        UpgradeType upgradeType = SelectRandomUpgradeType(charData, owner);
 
         UpgradeCardData upgradeCardData = new UpgradeCardData
         {
             charImage = charData.charImage,
             charName = charData.charName,
             charData = charData,
-            upgradeType = SelectUpgradeType(charData, owner)
+            upgradeType = upgradeType
         };
+
         return upgradeCardData;
-    }
+
+    } 
 
     // Checks if the character can be upgraded based on its level
     private bool CheckUpgradeValidity(CharacterData charData, Owner owner)
@@ -139,7 +189,6 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
 
         return false;
     }
-
 
 
     private bool DoubleChar(CharacterData charData, Owner owner)

@@ -49,15 +49,20 @@ public class PlayerViewManager : MonoBehaviour
     // Displays upgrade cards with random character data and upgrade types
     private void ShowCardUpgradeProp()
     {
+        List<UpgradeCardData> selectedCards = new List<UpgradeCardData>();
+
         if (!upgradeCardsPanel.activeSelf)
         {
             upgradeCardsPanel.SetActive(true);
         }
 
-        foreach (var card in upgradeCards)
+        selectedCards = UpgradeManager.Instance.ReturnRandomUpgradeList(playerOwner, upgradeCards.Count);
+
+        for (int i = 0; i < upgradeCards.Count; i++)
         {
-            card.GetComponent<UpgradeCard>().SetUpgradeCard(UpgradeManager.Instance.SelectRandomUpgradeCard(playerOwner));
+            upgradeCards[i].GetComponent<UpgradeCard>().SetUpgradeCard(selectedCards[i]);
         }
+
     }
 
     public void HideUpgradeCards()

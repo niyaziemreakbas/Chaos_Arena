@@ -19,8 +19,8 @@ public class RangedWeapon : CharAttackController
         if (projRb != null)
             projRb.velocity = dir * projectileSpeed;
 
-        var damager = proj.GetComponent<IDamager>();
-        if (damager != null)
-            damager.DealDamage(target.GetComponent<IDamageable>(), owner.CharacterData.damage);
+        //var damager = proj.GetComponent<IDamager>();
+        //if (damager != null)
+        //    damager.DealDamage(target.GetComponent<IDamageable>(), owner.CharacterData.damage);
     }
 }

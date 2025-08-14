@@ -22,19 +22,26 @@ public class Character : MonoBehaviour, IDamageable
     private float health;
     float currentHealth;
 
-    [SerializeField] public Transform CharModel;
     [SerializeField] public MeleeWeapon meleeWeapon;
 
     private CharMovementController movementController;
+
+    [Header("Flash System")]
+    [SerializeField] public Transform CharModel;
+    private SpriteRenderer spriteRenderer;
+    private Color originalColor;
+    private float flashTimer;
+    private const float flashDuration = 0.3f;
+    private bool isFlashing;
 
     public void Initialize(Owner enemyOwner, Owner teamOwner, CharacterData data)
     {
         this.enemyOwner = enemyOwner;
         this.teamOwner = teamOwner;
-        this.characterData = data;
+        this.characterData = data.Clone();
+;
         health = characterData.health;
         currentHealth = health;
-        //meleeWeapon.SetWeapon(teamOwner, enemyOwner, characterData.damage);
 
         movementController = GetComponent<CharMovementController>();
         movementController.Initialize(this, teamOwner, enemyOwner);
@@ -42,6 +49,10 @@ public class Character : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        spriteRenderer = CharModel.GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+            originalColor = spriteRenderer.color;
+
         if (characterData == null)
         {
             Debug.LogError($"CharacterData is not assigned on {name}");
@@ -49,6 +60,19 @@ public class Character : MonoBehaviour, IDamageable
         }
 
         health = characterData.health;
+    }
+
+    private void Update()
+    {
+        if (isFlashing)
+        {
+            flashTimer -= Time.deltaTime;
+            if (flashTimer <= 0)
+            {
+                spriteRenderer.color = originalColor;
+                isFlashing = false;
+            }
+        }
     }
 
     public void TakeDamage(DamageInfo damageInfo)
@@ -59,41 +83,29 @@ public class Character : MonoBehaviour, IDamageable
         //print($"Character {name} took {damageInfo.amount} damage");
 
         currentHealth -= damageInfo.amount;
+       
+        StartFlash();
 
         if (currentHealth <= 0)
         {
-            // Flash bittikten sonra öl
-            StartCoroutine(DamageFlashAndDie());
-        }
-        else
-        {
-            // Sadece flash
-            StartCoroutine(DamageFlash());
+            Die();
         }
     }
 
-    private IEnumerator DamageFlash()
+    private void StartFlash()
     {
-        SpriteRenderer sr = CharModel.GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            Color originalColor = sr.color;
-            sr.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0.2f);
-            yield return new WaitForSeconds(0.3f);
-            sr.color = originalColor;
-        }
-    }
+        if (spriteRenderer == null) return;
 
-    private IEnumerator DamageFlashAndDie()
-    {
-        yield return DamageFlash(); // Önce efekt
-        Die(); // Sonra ölüm
+        flashTimer = flashDuration;
+        isFlashing = true;
+        spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0.5f);
     }
 
     private void Die()
     {
-        SpriteRenderer sr = CharModel.GetComponent<SpriteRenderer>();
-        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1f); // Ölüm sonrası renk değişimi
+        if (spriteRenderer != null)
+            spriteRenderer.color = originalColor;
+
         gameObject.SetActive(false);
 
         OnCharDie?.Invoke(teamOwner);
@@ -113,7 +125,11 @@ public class Character : MonoBehaviour, IDamageable
         }
 
         //Upgrade Logic
-        //print($"Upgrading character: {characterData.charName} to level {characterData.charLevel + 1}");
+        characterData.health += 10; // Example upgrade
+        characterData.damage += 10; // Example upgrade
+        characterData.attackCooldown -= 0.1f; // Example upgrade
+        characterData.movementSpeed += 1; // Example upgrade
+
         characterData.charLevel++;
         return true;
 

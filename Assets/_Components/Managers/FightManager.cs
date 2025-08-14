@@ -9,6 +9,7 @@ public class FightManager : SingletonMonoBehaviour<FightManager>
     public static event Action OnFightStateEnd;
 
     private bool fightEnded = false;
+    private Owner checkingOwner;
 
     private void OnEnable()
     {
@@ -17,6 +18,12 @@ public class FightManager : SingletonMonoBehaviour<FightManager>
 
     private void CheckFightState(Owner owner)
     {
+        if(checkingOwner != null && checkingOwner == owner)
+        {
+            print($"Already checking end state for owner: {owner.OwnerName}");
+            return;
+        }
+
         if (fightEnded) return; // Eðer zaten bitmiþse tekrar kontrol etme
 
         bool anyAlive = false;
@@ -25,12 +32,13 @@ public class FightManager : SingletonMonoBehaviour<FightManager>
             if (go.activeInHierarchy)
             {
                 anyAlive = true;
-                break;
+                return;
             }
         }
 
         if (!anyAlive)
         {
+            print($"Owner {owner.OwnerName} has no characters left. Ending fight state.");
             fightEnded = true; // Fight sadece bir kez bitirilecek
             owner.OnLoseFightState();
             OnFightStateEnd?.Invoke();
@@ -39,6 +47,7 @@ public class FightManager : SingletonMonoBehaviour<FightManager>
 
     public void ResetFightState()
     {
-        fightEnded = false; // Yeni bir fight baþladýðýnda resetle
+        fightEnded = false;
+        checkingOwner = null;
     }
 }
