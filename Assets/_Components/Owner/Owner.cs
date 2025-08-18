@@ -3,15 +3,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Owner : MonoBehaviour
+public abstract class Owner : MonoBehaviour
 {
     public event Action<Owner> OnUpgradePerformed;
+    public event Action OnBonusPlayed;
+    public event Action OnDataChanged;
 
-    private bool isLosedLastFight = false;
-    public bool IsLosedLastFight => isLosedLastFight;
+    protected bool isLosedLastFight = false;
+    public bool IsLosedLastFight
+    {
+        get => isLosedLastFight;
+        protected set
+        {
+            if (isLosedLastFight != value)
+            {
+                isLosedLastFight = value;
+                OnDataChanged?.Invoke();
+            }
+        }
+    }
 
-    private int fightHealth = 3;
-    public int FightHealth => fightHealth;
+    private int gameHealth = 3;
+    public int GameHealth
+    {
+        get => gameHealth;
+        private set
+        {
+            if (gameHealth != value)
+            {
+                gameHealth = value;
+                OnDataChanged?.Invoke();
+            }
+        }
+    }
+
+    protected int upgradeCount = 0;
+    public int UpgradeCount
+    {
+        get => upgradeCount;
+        protected set
+        {
+            if (upgradeCount != value)
+            {
+                print($"Upgrade count changed for {OwnerName}: {upgradeCount} -> {value}");
+                upgradeCount = value;
+                OnDataChanged?.Invoke();
+            }
+        }
+    }
 
     public string OwnerName;
     public Color teamColor;
@@ -22,9 +61,6 @@ public class Owner : MonoBehaviour
     protected bool isUpward;
     public bool IsUpward => isUpward;
 
-    protected int upgradeCount = 0;
-    public int UpgradeCount => upgradeCount;
-
     // The spawn origin for owner's characters, where new characters will be instantiated
     public Transform spawnOrigin;
 
@@ -34,15 +70,19 @@ public class Owner : MonoBehaviour
     protected UnitRegistry unitRegistry;
     public UnitRegistry UnitRegistry => unitRegistry;
 
-    //private void OnEnable()
-    //{
-    //    GameStateManager.Instance.OnStateHandle += HandleState;
-    //}
-    //private void OnDisable()
-    //{
-    //    GameStateManager.Instance.OnStateHandle -= HandleState;
-    //}
-
+    protected void OnUpgradePerformedFunction()
+    {
+        if (IsLosedLastFight)
+        {
+            IsLosedLastFight = false;
+            OnBonusPlayed?.Invoke();
+        }
+        else
+        {
+            UpgradeCount++;
+            OnUpgradePerformed?.Invoke(this);
+        }
+    }
 
     public void HandleState(GameState currentState)
     {
@@ -54,6 +94,9 @@ public class Owner : MonoBehaviour
             case GameState.Fight:
                 HandleFightState();
                 break;
+            //case GameState.BonusRound:
+            //    HandleBonusState();
+            //    break;
             default:
                 Debug.LogWarning("Unhandled game state!");
                 break;
@@ -62,42 +105,58 @@ public class Owner : MonoBehaviour
 
     }
 
-    protected virtual void HandleUpgradeState() { }
-    protected virtual void HandleFightState() { }
+    protected abstract void HandleUpgradeState();
+
+    //protected virtual void HandleBonusState()
+    //{
+    //    if (isLosedLastFight)
+    //    {
+    //        print($"{OwnerName} is in bonus state after losing last fight!");
+
+    //        HandleUpgradeState();
+
+    //        IsLosedLastFight = false;
+
+    //        OnBonusPlayed?.Invoke();
+    //    }
+    //    else
+    //    {
+    //        print($"{OwnerName} is in bonus state, but did not lose last fight. Skipping upgrade state.");
+    //        return;
+    //    }
+    //}
+
+    protected virtual void HandleFightState()
+    {
+        UpgradeCount = 0;
+
+        foreach (var character in unitRegistry.SpawnedCharacters)
+        {
+            character.GetComponent<Character>().OnFightStateStarted();
+        }
+    }
 
     private void Awake()
     {
         unitRegistry = new UnitRegistry();
+        //selector = GetComponent<IUpgradeSelector>();
     }
 
     public void Reset()
     {
-        //print($"Resetting owner {OwnerName}.");
+        UpgradeCount = 0;
 
-
-        upgradeCount = 0;
-        //if (isLosedLastFight)
-        //{
-        //    upgradeCount--;
-        //}
         CharacterSpawner.Instance.RepositionCharacters(this);
-        CharacterSpawner.Instance.ActivateAllIfInactive(this.unitRegistry.SpawnedCharacters);
-    }
-
-    public void OnUpgradePerformedFunc() { 
-      //  print($"Upgrade performed by {ownerName}. Current upgrade count: {upgradeCount}");
-        print($"{OwnerName} performed an upgrade. Current upgrade count: {upgradeCount}");
-        upgradeCount++;
-        OnUpgradePerformed?.Invoke(this);
+        CharacterSpawner.Instance.ActivateAllIfInactive(unitRegistry.SpawnedCharacters);
     }
 
     public void OnLoseFightState()
     {
-        isLosedLastFight = true;
-        fightHealth--;
+        IsLosedLastFight = true;
+        GameHealth--;
 
         print($"{OwnerName} lost the fight!");
-        if (fightHealth <= 0)
+        if (gameHealth <= 0)
         {
             GameSceneManager.OnGameEnded?.Invoke();
         }

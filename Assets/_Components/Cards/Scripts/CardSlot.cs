@@ -13,37 +13,6 @@ public class CardSlot : MonoBehaviour, IDropHandler
         //print(CurrentCard.CardData.cardName);
     }
 
-    //public void OnDrop(PointerEventData eventData)
-    //{
-
-    //    Card droppedCard = eventData.pointerDrag.GetComponent<Card>();
-
-    //    Debug.Log("Bir þey buraya býrakýldý: " + droppedCard.CardData.cardName);
-
-
-    //    if (HasCard()) 
-    //    {
-    //        print($"CardSlot: {currentCard.CardData.cardName} Has current card, swapping with dropped card.");
-    //        if (droppedCard == null)
-    //        {
-    //            Debug.LogWarning("Dropped  Card. null");
-    //            return;
-    //        }
-    //        if(currentCard == null)
-    //        {
-    //            Debug.LogWarning("current card null.");
-    //            return;
-    //        }
-    //        CardSwapManager.Instance.SwapCards(currentCard, droppedCard);
-    //    }
-    //    else if (droppedCard != null)
-    //    {
-    //        SetCurrentCard(droppedCard);
-    //    }
-    //}
-
-
-
     void SetChildrenToCurrentCard()
     {
         SetCurrentCard(transform.GetComponentInChildren<CardController>());

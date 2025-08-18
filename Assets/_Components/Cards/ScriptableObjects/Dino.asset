@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Dino
   m_EditorClassIdentifier: 
   cardName: Dino
-  health: 200
-  damage: 40
+  health: 300
+  damage: 80
   range: 1
-  movementSpeed: 2
+  movementSpeed: 1
   attackSpeed: 5
   priorityLevel: 1
   spawnCount: 2

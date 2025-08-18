@@ -25,6 +25,7 @@ public class Character : MonoBehaviour, IDamageable
     [SerializeField] public MeleeWeapon meleeWeapon;
 
     private CharMovementController movementController;
+    private CharacterView characterView;
 
     [Header("Flash System")]
     [SerializeField] public Transform CharModel;
@@ -39,11 +40,14 @@ public class Character : MonoBehaviour, IDamageable
         this.enemyOwner = enemyOwner;
         this.teamOwner = teamOwner;
         this.characterData = data.Clone();
-;
         health = characterData.health;
+        
         currentHealth = health;
 
+        characterView = GetComponent<CharacterView>();
         movementController = GetComponent<CharMovementController>();
+
+        characterView.Initialize(this);
         movementController.Initialize(this, teamOwner, enemyOwner);
     }
 
@@ -124,6 +128,7 @@ public class Character : MonoBehaviour, IDamageable
             return false;
         }
 
+
         //Upgrade Logic
         characterData.health += 10; // Example upgrade
         characterData.damage += 10; // Example upgrade
@@ -131,7 +136,15 @@ public class Character : MonoBehaviour, IDamageable
         characterData.movementSpeed += 1; // Example upgrade
 
         characterData.charLevel++;
+
+        characterView.UpdateView();
+
         return true;
 
+    }
+
+    public void ResetChar()
+    {
+        currentHealth = health;
     }
 }

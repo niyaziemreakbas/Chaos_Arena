@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0551ec95fabbc40a9199be3c0b591f, type: 3}
   m_Name: FlyingMelee
   m_EditorClassIdentifier: 
-  cardName: FlyingMelee
+  cardName: Demon
   health: 120
-  damage: 30
+  damage: 40
   range: 1
-  movementSpeed: 1
+  movementSpeed: 2
   attackSpeed: 5
   priorityLevel: 2
   spawnCount: 4

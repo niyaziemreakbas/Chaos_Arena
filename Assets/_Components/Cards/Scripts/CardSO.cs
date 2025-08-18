@@ -29,4 +29,11 @@ public class CardSO : ScriptableObject
     public Color cardColor;
 
     public GameObject charPrefab;
+
+    [Header("Upgrade Formulas")]
+    public string healthFormula = "baseHealth + level * 20";
+
+    public string damageFormula = "baseDamage + level * 5";
+
+    public string goldCostFormula = "100 * level ^ 1.2";
 }

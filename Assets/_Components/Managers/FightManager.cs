@@ -16,15 +16,22 @@ public class FightManager : SingletonMonoBehaviour<FightManager>
         Character.OnCharDie += CheckFightState;
     }
 
+    private void OnDisable()
+    {
+        Character.OnCharDie -= CheckFightState;
+    }
+
     private void CheckFightState(Owner owner)
     {
-        if(checkingOwner != null && checkingOwner == owner)
+        if (checkingOwner != null && checkingOwner == owner)
         {
             print($"Already checking end state for owner: {owner.OwnerName}");
             return;
         }
 
-        if (fightEnded) return; // Eðer zaten bitmiþse tekrar kontrol etme
+        if (fightEnded) return;
+
+        checkingOwner = owner; // Þu an kontrol edilen owner'ý set et
 
         bool anyAlive = false;
         foreach (GameObject go in owner.UnitRegistry.SpawnedCharacters)
@@ -32,17 +39,19 @@ public class FightManager : SingletonMonoBehaviour<FightManager>
             if (go.activeInHierarchy)
             {
                 anyAlive = true;
-                return;
+                break; // return yerine break
             }
         }
 
         if (!anyAlive)
         {
             print($"Owner {owner.OwnerName} has no characters left. Ending fight state.");
-            fightEnded = true; // Fight sadece bir kez bitirilecek
+            fightEnded = true;
             owner.OnLoseFightState();
             OnFightStateEnd?.Invoke();
         }
+
+        checkingOwner = null; // Kontrol bitti
     }
 
     public void ResetFightState()

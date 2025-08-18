@@ -85,16 +85,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 9022963694469296840, guid: 0c46f6b3318ac084e9e745724c2e57cc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5033124365805719469, guid: 0c46f6b3318ac084e9e745724c2e57cc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2352158758127364187, guid: 0c46f6b3318ac084e9e745724c2e57cc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 870860031095597317}
   m_SourcePrefab: {fileID: 100100000, guid: 0c46f6b3318ac084e9e745724c2e57cc, type: 3}
 --- !u!4 &862713528332644237 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7872285930557498080, guid: 0c46f6b3318ac084e9e745724c2e57cc, type: 3}
   m_PrefabInstance: {fileID: 7405891660583767405}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5072048064691103030 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2352158758127364187, guid: 0c46f6b3318ac084e9e745724c2e57cc, type: 3}
+  m_PrefabInstance: {fileID: 7405891660583767405}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &870860031095597317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5072048064691103030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7c29bf26b6129c4d915d26ae8b32fad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpgradeCount: {fileID: 0}
+  HealthCount: {fileID: 0}
+  OwnerName: {fileID: 0}
+  BonusRound: {fileID: 0}
 --- !u!1001 &8286971736447985302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -106,6 +135,10 @@ PrefabInstance:
     - target: {fileID: 46310619825946897, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
       propertyPath: m_Name
       value: PlayerOwner
+      objectReference: {fileID: 0}
+    - target: {fileID: 2261461214821474112, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.99
       objectReference: {fileID: 0}
     - target: {fileID: 8014611315592032606, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -147,13 +180,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8196604723863564470, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 46310619825946897, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5513963877594222764}
   m_SourcePrefab: {fileID: 100100000, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
 --- !u!4 &2033553783885092808 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8014611315592032606, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
   m_PrefabInstance: {fileID: 8286971736447985302}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8333272982371886983 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 46310619825946897, guid: da2bfea0359c67048a92b9af52aeda4b, type: 3}
+  m_PrefabInstance: {fileID: 8286971736447985302}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5513963877594222764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8333272982371886983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7c29bf26b6129c4d915d26ae8b32fad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpgradeCount: {fileID: 0}
+  HealthCount: {fileID: 0}
+  OwnerName: {fileID: 0}
+  BonusRound: {fileID: 0}

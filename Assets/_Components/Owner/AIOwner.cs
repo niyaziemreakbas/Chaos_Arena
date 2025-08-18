@@ -1,10 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class AIOwner : Owner
 {
+    [SerializeField] private TextMeshProUGUI thinkingText;
+    private float minDelay = 3.0f;
+    private float maxDelay = 5.0f;
+
     private void Start()
     {
         Initialize();
@@ -18,16 +23,40 @@ public class AIOwner : Owner
 
     protected override void HandleUpgradeState()
     {
-        UpgradeManager.Instance.HandleCardUpgrades(UpgradeManager.Instance.ReturnRandomUpgradeCard(this), this);
+        print("AI Owner handling upgrade state.");
+        StartCoroutine(DelayedUpgradeRoutine());
     }
 
-    protected override void HandleFightState()
+    private IEnumerator DelayedUpgradeRoutine()
     {
-        foreach (var character in unitRegistry.SpawnedCharacters)
+        float waitTime = UnityEngine.Random.Range(minDelay, maxDelay);
+
+        Coroutine thinkingAnim = StartCoroutine(ShowThinkingText(waitTime));
+
+        yield return new WaitForSeconds(waitTime);
+
+        StopCoroutine(thinkingAnim);
+        thinkingText.text = "";
+
+        if (UpgradeManager.Instance.HandleCardUpgrades(UpgradeManager.Instance.ReturnRandomUpgradeCard(this), this))
         {
-            character.GetComponent<Character>().OnFightStateStarted();
+            OnUpgradePerformedFunction();
+
         }
-        upgradeCount = 0; // Reset upgrade count after fight
     }
-    
+
+    private IEnumerator ShowThinkingText(float duration)
+    {
+        float timer = 0f;
+        int dotCount = 0;
+
+        while (timer < duration)
+        {
+            dotCount = (dotCount + 1) % 4; // 0,1,2,3
+            thinkingText.text = "Choosing" + new string('.', dotCount);
+
+            yield return new WaitForSeconds(0.3f);
+            timer += 0.3f;
+        }
+    }
 }

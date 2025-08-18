@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class UpgradeCard : MonoBehaviour, IPointerClickHandler
 {
     public static event Action<UpgradeCardData, Owner> OnUpgradeCardClicked;
+    public static event Action OnUpgradeCardClickedForUI;
 
     UpgradeCardView upgradeCardView;
 
@@ -42,6 +43,11 @@ public class UpgradeCard : MonoBehaviour, IPointerClickHandler
         if (upgradeCardData != null)
         {
             OnUpgradeCardClicked?.Invoke(upgradeCardData, playerOwner);
+
+            if (!GameStateManager.Instance.DecideCanUpgradeForOwner(playerOwner))
+            {
+                OnUpgradeCardClickedForUI?.Invoke();
+            }
         }
         else
         {

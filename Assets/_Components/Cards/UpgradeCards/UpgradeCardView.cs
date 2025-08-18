@@ -12,11 +12,15 @@ public class UpgradeCardView : MonoBehaviour
 
     [SerializeField] Image charImage;
 
+    [SerializeField] Image backGroundColor;
+
     [SerializeField] Image doubleImage;
 
     [SerializeField] Image upgradeImage;
 
     [SerializeField] TextMeshProUGUI upgradeType;
+
+   // [SerializeField] GameObject starContainer;
 
     public void SetUpgradeCard(UpgradeCardData upgradeCard)
     {
@@ -34,25 +38,65 @@ public class UpgradeCardView : MonoBehaviour
 
         charName.text = upgradeCard.charName;
         charImage.sprite = upgradeCard.charImage;
-        upgradeType.text = upgradeCard.upgradeType.ToString();
 
-        switch (upgradeCard.upgradeType.ToString())
+        switch (upgradeCard.upgradeType)
         {
-            case "Doubler":
+            case UpgradeType.Doubler:
                 doubleImage.gameObject.SetActive(true);
                 upgradeImage.gameObject.SetActive(false);
+                upgradeType.text = $"x2 {upgradeCard.charData.charName}";
+               // ActivateStars();
                 break;
-            case "Upgrader":
+            case UpgradeType.Upgrader:
                 doubleImage.gameObject.SetActive(false);
                 upgradeImage.gameObject.SetActive(true);
+                upgradeType.text = $"Stat Upgrade";
+              //  ActivateStars();
                 break;
-            default:
-                //Debug.Log("Unknown upgrade type: " + upgradeCard.upgradeType);
+            case UpgradeType.Spawner:
                 doubleImage.gameObject.SetActive(false);
                 upgradeImage.gameObject.SetActive(false);
+                upgradeType.text = $"+{upgradeCard.charData.spawnCount.ToString()} {upgradeCard.charData.charName}";
+                //DeactivateStars();
+                break;
+
+            default:
+                Debug.Log("Unknown upgrade type: ");
                 break;
         }
 
-        GetComponent<Image>().color = upgradeCard.charData.charColor;
+        switch (upgradeCard.charData.charName)
+        {
+            //Green
+            case "Blup":
+                backGroundColor.color = new Color(0.5647f, 0.6392f, 0.7294f);
+                break;
+            //Orange
+            case "Dino":
+                backGroundColor.color = new Color(1.0f, 0.9608f, 0.1333f);
+                break;
+            //Red
+            case "Demon":
+                backGroundColor.color = new Color(0.0235f, 0.6745f, 0.9961f);
+                break;
+        }
+
+        //GetComponent<Image>().color = upgradeCard.charData.charColor;
     }
+
+    //private void ActivateStars()
+    //{
+    //    foreach (Transform star in starContainer.transform)
+    //    {
+    //        star.gameObject.SetActive(true);
+    //    }
+    //}
+    //private void DeactivateStars()
+    //{
+    //    foreach (Transform star in starContainer.transform)
+    //    {
+    //        star.gameObject.SetActive(false);
+    //    }
+    //}
+
 }

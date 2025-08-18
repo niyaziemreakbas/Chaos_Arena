@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
 {
-    public event Action OnStateHandle;
+    public static event Action OnCharUIUpdateHandle;
 
     [SerializeField] TextMeshProUGUI upgradeCount;
 
@@ -20,10 +20,13 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
 
     private int currentUpgradeCount = 0;
 
+    private bool bonusPlayedFlag = false;
+
     private void OnEnable()
     {
         FightManager.OnFightStateEnd += HandleFightStateEnd;
     }
+
     private void OnDisable()
     {
         FightManager.OnFightStateEnd -= HandleFightStateEnd;
@@ -41,53 +44,69 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
 
     private void Update()
     {
-        upgradeCount.text = $"Upgrade Count: {currentUpgradeCount}/{maxUpgradeCount}";
+        upgradeCount.text = $"Turn : {currentUpgradeCount}/{maxUpgradeCount}";
     }
 
     private void HandleFightStateEnd()
     {
         print("Fight state ended, resetting game...");
+
         StartCoroutine(ResetGameAfterDelay());
     }
 
     private IEnumerator ResetGameAfterDelay()
     {
         yield return new WaitForSeconds(3.0f);
-        print("Game state to Upgrade...");
-        ResetOwners();
+
         currentUpgradeCount = 0;
-        ChangeState(GameState.Upgrade);
+
+        ResetOwners();
+
+        print("The game resetted now deciding to state bonus or upgrade");
+        if (owners.Exists(o => o.IsLosedLastFight))
+        {
+            print("Decided to bonus");
+            ChangeState(GameState.Idle);
+            StartCoroutine(HandleBonusState());
+        }
+        else
+        {
+            print("Decided to upgrade");
+            ChangeState(GameState.Upgrade);
+        }
     }
 
     private IEnumerator StartGameAfterDelay()
     {
-        yield return new WaitForSeconds(0.0f);
-        
+        yield return new WaitForSeconds(0.3f);
+
         HandleStatesOnOwners();
     }
 
-    void ChangeState(GameState newState)
+    private void ChangeState(GameState newState)
     {
         if (currentState == newState)
-            return;
-
-        if(currentState == GameState.Fight && newState == GameState.Upgrade)
         {
-            ResetOwners();
+            Debug.LogWarning($"Game State is already {newState}, no change made.");
+            return;
         }
 
-        currentState = newState;
-        Debug.Log($"Game State changed to {newState}");
+        if(newState == GameState.Idle)
+        {
+            currentState = GameState.Idle;
+            print("Game waiting on idle now");
+            return;
+        }
 
+        print($"Changing game state from {currentState} to {newState}");
+        currentState = newState;
         HandleStatesOnOwners();
-        //OnStateHandle?.Invoke(newState);
     }
 
     private void SubscribeOwners()
     {
         foreach (var owner in owners)
         {
-           // print($"Subscribing to owner: {owner.ownerName}");
             owner.OnUpgradePerformed += HandleOwnerUpgraded;
         }
     }
@@ -100,12 +119,17 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
         }
     }
 
-    private bool DecideCanUpgrade()
+    public bool DecideCanUpgrade()
     {
+        if (owners.Count == 0) return false;
+
+        // Ýlk owner'ýn upgrade count'unu referans alýyoruz
+        int targetCount = owners[0].UpgradeCount;
+
         foreach (var owner in owners)
         {
-            //print($"Checking owner: {owner.ownerName} with upgrade count: {owner.UpgradeCount} against current upgrade count: {currentUpgradeCount}");
-            if (owner.UpgradeCount != currentUpgradeCount)
+            print($": {owner.OwnerName} upgrade count: {owner.UpgradeCount} target count: {targetCount}");
+            if (owner.UpgradeCount != targetCount)
             {
                 return false;
             }
@@ -113,42 +137,76 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
         return true;
     }
 
+    public bool DecideCanUpgradeForOwner(Owner owner)
+    {
+        if (currentUpgradeCount == owner.UpgradeCount)
+        {
+            return true;
+        }
+        return false;
+    }
+
     private void HandleOwnerUpgraded(Owner owner)
     {
-        // Owner upgrade performed but not all handled yet.
-        if (!DecideCanUpgrade())
+        if (DecideCanUpgrade())
         {
+            currentUpgradeCount++;
+        }
+        else
+        {
+            print($"Owner {owner.OwnerName} performed an upgrade but not all owners have reached the same upgrade count yet.");
             return;
         }
 
-        // All owners have performed their upgrades and reached the same count now we increment the upgrade count.
+        // All owners have performed their upgrades and reached the same count now we going fight state.
         if (currentUpgradeCount >= maxUpgradeCount)
         {
             ChangeState(GameState.Fight);
-            FightManager.Instance.ResetFightState(); // Reset fight state for the new fight
+            FightManager.Instance.ResetFightState();
+            return;
+        }
+        else
+        {
+            // Upgrade again
+            OnCharUIUpdateHandle?.Invoke();
+            HandleStatesOnOwners();
         }
 
-        //print($"All owners have performed their upgrades. Upgrade count increasing...Current upgrade count: {currentUpgradeCount}");
-        HandleStatesOnOwners();
     }
 
-    public void HandleStatesOnOwners()
+    private IEnumerator HandleBonusState()
     {
+        print("Handling Bonus State");
         foreach (var owner in owners)
         {
             if (owner.IsLosedLastFight)
             {
-                //owner.OnUpgradePerformedFunc(); // Kaybedene ekstra upgrade
-                owner.HandleState(currentState);
-                print($"{owner.OwnerName} gets extra upgrade for losing last fight!");
+                bonusPlayedFlag = false;
+
+                owner.OnBonusPlayed += HandleBonusPlayed; // evente abone ol
+
+                owner.HandleState(GameState.Upgrade);
+
+                yield return new WaitUntil(() => bonusPlayedFlag);
+
+                owner.OnBonusPlayed -= HandleBonusPlayed;
+
+                ChangeState(GameState.Upgrade);
             }
-
-            owner.HandleState(currentState);
         }
+    }
 
-        if (currentState == GameState.Upgrade)
+    private void HandleBonusPlayed()
+    {
+        bonusPlayedFlag = true;
+    }
+
+    public void HandleStatesOnOwners()
+    {
+        //bool isBonusRoundPlayed = false;
+        foreach (var owner in owners)
         {
-            currentUpgradeCount++;
+            owner.HandleState(currentState);
         }
     }
 
@@ -165,5 +223,6 @@ public enum GameState
 {
     Upgrade,
     Fight,
+    Idle
 }
 

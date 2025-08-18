@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8014611315592032606}
   - component: {fileID: 4325206161291612971}
+  - component: {fileID: 8196604723863564470}
   m_Layer: 0
   m_Name: PlayerOwner
   m_TagString: Player
@@ -50,6 +51,21 @@ MonoBehaviour:
   teamColor: {r: 0, g: 0.029557705, b: 1, a: 1}
   spawnOrigin: {fileID: 2261461214821474112}
   charsRoot: {fileID: 3942307810611431000}
+--- !u!114 &8196604723863564470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46310619825946897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7c29bf26b6129c4d915d26ae8b32fad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpgradeCount: {fileID: 0}
+  HealthCount: {fileID: 0}
+  OwnerName: {fileID: 0}
 --- !u!1 &2135562239276327988
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,18 +11,8 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
 
     [SerializeField] UpgradeWeightConfig upgradeWeightConfig;
 
-    private void OnEnable()
-    {
-        UpgradeCard.OnUpgradeCardClicked += HandleCardUpgrades;
-    }
-
-    private void OnDisable()
-    {
-        UpgradeCard.OnUpgradeCardClicked -= HandleCardUpgrades;
-    }
-
     // 
-    public void HandleCardUpgrades(UpgradeCardData upgradeCardData, Owner owner)
+    public bool HandleCardUpgrades(UpgradeCardData upgradeCardData, Owner owner)
     {
         switch (upgradeCardData.upgradeType)
         {
@@ -37,17 +27,16 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
                 break;
             default:
                 Debug.LogWarning("Unhandled upgrade type!");
-                break;
+                return false; // Unhandled upgrade type
+
         }
-        owner.OnUpgradePerformedFunc();
+        print($"Upgrade performed: {upgradeCardData.upgradeType} for character: {upgradeCardData.charName} by {owner.OwnerName}");
+        return true;
     }
 
     // Selects a random character from the selected characters list
     public CharacterData SelectRandomChar(Owner owner)
     {
-
-       // print(owner.ownerName + " is selecting a random character from number of : ");
-
         var mgr = owner.UnitRegistry;
 
         int chosenCharIndex = UnityEngine.Random.Range(0, mgr.SelectedCharacters.Count);
@@ -97,9 +86,9 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
         var usedUpgradePairs = new Dictionary<string, HashSet<UpgradeType>>();
 
         int attempts = 0;
-        int maxAttempts = selectCount * 5;
+        int maxAttempts = selectCount * 9;
 
-        while (selectedCards.Count < selectCount && attempts < maxAttempts)
+        while (selectedCards.Count != selectCount && attempts < maxAttempts)
         {
             attempts++;
 
@@ -201,6 +190,7 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
             return false;
         }
 
+
         CharacterSpawner.Instance.SpawnCharacter(charData, units.Count, owner);
         return true;
     }
@@ -222,6 +212,7 @@ public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
             Character characterUnit = unit.GetComponent<Character>();
             if (characterUnit != null)
             {
+               // print($"Upgrading character: {unit.gameObject.name} to level {charData.charLevel + 1}");
                 characterUnit.UpgradeChar();
             }
             else

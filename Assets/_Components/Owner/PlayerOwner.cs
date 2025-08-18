@@ -8,6 +8,16 @@ public class PlayerOwner : Owner
     public static event Action OnUpgradeViewHandle;
     public static event Action OnFightViewHandle;
 
+    private void OnEnable()
+    {
+        UpgradeCard.OnUpgradeCardClicked += UpgradeCardClicked;
+    }
+
+    private void OnDisable()
+    {
+        UpgradeCard.OnUpgradeCardClicked -= UpgradeCardClicked;
+    }
+
     private void Start()
     {
         Initialize();
@@ -17,28 +27,28 @@ public class PlayerOwner : Owner
     {
         unitRegistry.SelectedCharacters = DataManager.Instance.PlayerSelectedCharacters;
         isUpward = true; // Assuming player is always upward for now
-
-        //foreach (var character in unitRegistry.SelectedCharacters)
-        //{
-        //    print("Player : " + character.charName);
-        //}
-
     }
 
     protected override void HandleUpgradeState()
     {
+        print("Player Owner handling upgrade state.");
         OnUpgradeViewHandle?.Invoke();
-
     }
 
     protected override void HandleFightState()
     {
+        base.HandleFightState();
         OnFightViewHandle?.Invoke();
-        upgradeCount = 0;
-        
-        foreach (var character in unitRegistry.SpawnedCharacters)
+    }
+
+    private void UpgradeCardClicked(UpgradeCardData upgradeCardData, Owner owner)
+    {
+        if (GameStateManager.Instance.DecideCanUpgradeForOwner(this) || IsLosedLastFight)
         {
-            character.GetComponent<Character>().OnFightStateStarted();
+            if(UpgradeManager.Instance.HandleCardUpgrades(upgradeCardData, this))
+            {
+                OnUpgradePerformedFunction();
+            }
         }
     }
 }

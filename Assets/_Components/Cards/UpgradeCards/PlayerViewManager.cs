@@ -9,46 +9,26 @@ public class PlayerViewManager : MonoBehaviour
 
     public List<GameObject> upgradeCards = new List<GameObject>();
 
-    private Owner playerOwner;
-    private Owner enemyOwner;
-
-    [Header("EnemyUI Components")]
-    [SerializeField] TextMeshProUGUI enemyHealth;
-    [SerializeField] TextMeshProUGUI enemyName;
-
-    [Header("PlayerUI Components")]
-    [SerializeField] TextMeshProUGUI playerHealth;
-    [SerializeField] TextMeshProUGUI playerName;
-
     private void OnEnable()
     {
         PlayerOwner.OnUpgradeViewHandle += ShowCardUpgradeProp;
         PlayerOwner.OnFightViewHandle += HideUpgradeCards;
-        FightManager.OnFightStateEnd += UpdateOwnerData;
+        UpgradeCard.OnUpgradeCardClickedForUI += HideUpgradeCards;
+
     }
 
     private void OnDisable()
     {
-        FightManager.OnFightStateEnd -= UpdateOwnerData; 
         PlayerOwner.OnUpgradeViewHandle -= ShowCardUpgradeProp;
         PlayerOwner.OnFightViewHandle -= HideUpgradeCards;
-    }
-
-    private void Start()
-    {
-        playerOwner = OwnerManager.Instance.PlayerOwner.GetComponent<Owner>();
-        enemyOwner = OwnerManager.Instance.EnemyOwner.GetComponent<Owner>();
-        if (playerOwner == null || enemyOwner == null)
-        {
-            Debug.LogError("Player or Enemy owner is not assigned!");
-            return;
-        }
-        UpdateOwnerData();
+        UpgradeCard.OnUpgradeCardClickedForUI -= HideUpgradeCards;
     }
 
     // Displays upgrade cards with random character data and upgrade types
     private void ShowCardUpgradeProp()
     {
+        print("Showing upgrade cards...");
+
         List<UpgradeCardData> selectedCards = new List<UpgradeCardData>();
 
         if (!upgradeCardsPanel.activeSelf)
@@ -56,42 +36,26 @@ public class PlayerViewManager : MonoBehaviour
             upgradeCardsPanel.SetActive(true);
         }
 
-        selectedCards = UpgradeManager.Instance.ReturnRandomUpgradeList(playerOwner, upgradeCards.Count);
+        selectedCards = UpgradeManager.Instance.ReturnRandomUpgradeList(OwnerManager.Instance.PlayerOwner, upgradeCards.Count);
+
+        print($"Selected count : {selectedCards.Count} upgrade card count: {upgradeCards.Count}");
 
         for (int i = 0; i < upgradeCards.Count; i++)
         {
             upgradeCards[i].GetComponent<UpgradeCard>().SetUpgradeCard(selectedCards[i]);
         }
-
     }
 
     public void HideUpgradeCards()
     {
-        if (upgradeCardsPanel)
+        print("Hiding upgrade cards...");
+        if (upgradeCardsPanel.activeInHierarchy)
         {
             upgradeCardsPanel.SetActive(false);
         }
         else
         {
             Debug.LogWarning("Upgrade cards panel is not assigned!");
-        }
-    }
-
-    private void UpdateOwnerData()
-    {
-        if (playerOwner != null || enemyOwner != null)
-        {
-            playerHealth.text = playerOwner.FightHealth.ToString();
-            playerName.text = playerOwner.OwnerName;
-            playerName.color = playerOwner.teamColor;
-
-            enemyHealth.text = enemyOwner.FightHealth.ToString();
-            enemyName.text = enemyOwner.OwnerName;
-            enemyName.color = enemyOwner.teamColor;
-        }
-        else
-        {
-            Debug.LogWarning("owners is not assigned!");
         }
     }
 }

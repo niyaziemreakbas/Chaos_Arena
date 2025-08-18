@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
 {
     [SerializeField] private float spawnInterval = 3f;
-    [SerializeField] private GameObject charPrefab;
 
     [Header("Reposition Settings")]
     // Maybe we can make maxUnits for every chars in the future
@@ -136,6 +135,18 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
                     group[index].transform.position = new Vector3(xPos, yPos, 0);
                 }
             }
+        }
+
+        ResetChars(owner);
+    }
+
+    private void ResetChars(Owner owner)
+    {
+        var mgr = owner.UnitRegistry;
+
+        foreach (var character in mgr.SpawnedCharacters)
+        {
+            character.GetComponent<Character>().ResetChar();
         }
     }
 

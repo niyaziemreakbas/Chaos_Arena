@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0551ec95fabbc40a9199be3c0b591f, type: 3}
   m_Name: Blup
   m_EditorClassIdentifier: 
-  cardName: FlyingRanged
+  cardName: Blup
   health: 100
   damage: 20
   range: 4
