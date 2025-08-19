@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
 {
-    [SerializeField] private float spawnInterval = 3f;
-
     [Header("Reposition Settings")]
     // Maybe we can make maxUnits for every chars in the future
     [SerializeField] private int maxUnitsPerRow = 6;

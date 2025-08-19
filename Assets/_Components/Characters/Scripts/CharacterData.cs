@@ -27,12 +27,10 @@ public class CharacterData
 
     public GameObject charPrefab;
 
-
     // Save for upcoming LevelDataSO
     public int baseHealth;
     public int baseDamage;
     public float baseCooldown;
-
 
     public void Upgrade()
     {

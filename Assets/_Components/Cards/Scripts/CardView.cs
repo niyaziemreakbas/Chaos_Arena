@@ -26,7 +26,9 @@ public class CardView : MonoBehaviour
 
     CardController cardController;
 
-    public static event Action<CardView> OnPopUpShown;
+    public static event Action<CardView> OnCardClicked;
+
+    private bool forceStopEquip = false;
 
     private void Start()
     {
@@ -89,7 +91,7 @@ public class CardView : MonoBehaviour
         //GetComponent<Image>().color = cardData.cardColor;
     }
 
-    public void OnCardClicked()
+    public void OnCardClickedFunction()
     {
         if(CardSwapManager.Instance.CanSwap() && gameObject.CompareTag("OnDeck"))
         {
@@ -114,16 +116,19 @@ public class CardView : MonoBehaviour
         {
             ShowCardOnFirst();
             popUpFrame.SetActive(true);
-            OnPopUpShown?.Invoke(this);
+            OnCardClicked?.Invoke(this);
         }
     }
 
-    private void HandleOtherPopUpOpened(CardView sender)
+    private void HandleOtherCardClicked(CardView sender)
     {
-        if (sender != this) // baþkasý açtýysa
+        print($"Card clicked: {sender.cardData.cardName}");
+        print($"Current card: {this.cardData.cardName}");
+        if (sender != this)
         {
+            print("Another card clicked, closing pop-up frame if open.");
             popUpFrame.SetActive(false);
-            //SetSlotToParent();
+            forceStopEquip = true; // force stop equip animation
         }
     }
 
@@ -149,8 +154,9 @@ public class CardView : MonoBehaviour
 
         print("Card is being swapped, waiting for swap to complete...");
 
-        yield return new WaitUntil(() => CardSwapManager.Instance.SwapCompleted);
+        yield return new WaitUntil(() => CardSwapManager.Instance.SwapCompleted || forceStopEquip);
 
+        forceStopEquip = false;
         CardSwapManager.Instance.SwapCompleted = false;
 
         // Stop Anim and go to currentSlot
@@ -166,7 +172,7 @@ public class CardView : MonoBehaviour
         transform.SetParent(cardController.CurrentSlot.gameObject.transform);
     }
 
-    private IEnumerator MoveToSlot()
+    public IEnumerator MoveToSlot()
     {
         SetSlotToParent();
 
@@ -183,12 +189,12 @@ public class CardView : MonoBehaviour
 
     private void OnEnable()
     {
-        OnPopUpShown += HandleOtherPopUpOpened;
+        OnCardClicked += HandleOtherCardClicked;
     }
 
     private void OnDisable()
     {
-        OnPopUpShown -= HandleOtherPopUpOpened;
+        OnCardClicked -= HandleOtherCardClicked;
     }
 }
 

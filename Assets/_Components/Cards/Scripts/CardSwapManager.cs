@@ -11,6 +11,8 @@ public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
 
     public void SelectCurrentCard(CardController card)
     {
+        currentCard?.GetComponent<CardView>().MoveToSlot();
+
         currentCard = card;
     }
 
@@ -33,11 +35,10 @@ public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
 
     }
 
-    //public bool HasSwapped(CardView card)
-    //{
-    //    print($"Checking if swapped card: {card.CardData.cardName} is the last swapped card: {lastSwappedCard?.CardData.cardName}");
-    //    return lastSwappedCard == card;
-    //}
+    public void UnEquipCard()
+    {
+
+    }
 
     public bool CanSwap()
     {

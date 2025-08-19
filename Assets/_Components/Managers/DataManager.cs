@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class DataManager : SingletonMonoBehaviour<DataManager>
 {
-    private List<CharacterData> playerSelectedCharacters = new List<CharacterData>();
-    public List<CharacterData> PlayerSelectedCharacters => playerSelectedCharacters;
+    public List<CharacterData> PlayerSelectedCharacters = new List<CharacterData>();
 
     public List<CardSO> cardSOList = new List<CardSO>();
     private List<CardData> cardDataList = new List<CardData>();
@@ -71,11 +70,11 @@ public class DataManager : SingletonMonoBehaviour<DataManager>
 
     public void SetPlayerSelectedData(List<CharacterData> characterDatas)
     {
-        playerSelectedCharacters.Clear();
+        PlayerSelectedCharacters.Clear();
 
         foreach (var characterData in characterDatas)
         {
-            playerSelectedCharacters.Add(characterData);
+            PlayerSelectedCharacters.Add(characterData);
         }
     }
 

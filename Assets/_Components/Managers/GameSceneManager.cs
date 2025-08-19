@@ -8,7 +8,7 @@ public class GameSceneManager : MonoBehaviour
 {
     public static Action OnGameEnded;
 
-    [SerializeField] private GameObject inventory;
+    public List<Transform> inventory = new List<Transform>();
 
     private void OnEnable()
     {
@@ -18,6 +18,7 @@ public class GameSceneManager : MonoBehaviour
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
+        DataManager.Instance.SetPlayerSelectedData(GetCardsAsList());
     }
 
     public void ApplyCards()
@@ -30,7 +31,7 @@ public class GameSceneManager : MonoBehaviour
     private List<CharacterData> GetCardsAsList()
     {
         List<CharacterData> selectedCards = new List<CharacterData>();
-        foreach (Transform child in inventory.transform)
+        foreach (Transform child in inventory)
         {
             CardSlot cardSlot = child.GetComponent<CardSlot>();
             if (cardSlot != null && cardSlot.CurrentCard != null)
