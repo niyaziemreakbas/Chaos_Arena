@@ -17,12 +17,8 @@ public class Character : MonoBehaviour, IDamageable
     public Owner TeamOwner => teamOwner;
     public Owner EnemyOwner => enemyOwner;
 
-    private GameObject currentTarget;
-
-    private float health;
+    private float maxHealth;
     float currentHealth;
-
-    [SerializeField] public MeleeWeapon meleeWeapon;
 
     private CharMovementController movementController;
     private CharacterView characterView;
@@ -35,14 +31,14 @@ public class Character : MonoBehaviour, IDamageable
     private const float flashDuration = 0.3f;
     private bool isFlashing;
 
-    public void Initialize(Owner enemyOwner, Owner teamOwner, CharacterData data)
+    public void Initialize(Owner enemyOwner, Owner teamOwner, CharacterData characterData)
     {
         this.enemyOwner = enemyOwner;
         this.teamOwner = teamOwner;
-        this.characterData = data.Clone();
-        health = characterData.health;
+        this.characterData = characterData.Clone();
+        maxHealth = this.characterData.health;
         
-        currentHealth = health;
+        currentHealth = maxHealth;
 
         characterView = GetComponent<CharacterView>();
         movementController = GetComponent<CharMovementController>();
@@ -63,7 +59,7 @@ public class Character : MonoBehaviour, IDamageable
             return;
         }
 
-        health = characterData.health;
+        maxHealth = characterData.health;
     }
 
     private void Update()
@@ -128,14 +124,15 @@ public class Character : MonoBehaviour, IDamageable
             return false;
         }
 
+        characterData.Upgrade();
 
         //Upgrade Logic
-        characterData.health += 10; // Example upgrade
-        characterData.damage += 10; // Example upgrade
-        characterData.attackCooldown -= 0.1f; // Example upgrade
-        characterData.movementSpeed += 1; // Example upgrade
+        //characterData.health += 10; // Example upgrade
+        //characterData.damage += 10; // Example upgrade
+        //characterData.attackCooldown -= 0.1f; // Example upgrade
+        //characterData.movementSpeed += 1; // Example upgrade
 
-        characterData.charLevel++;
+        //characterData.charLevel++;
 
         characterView.UpdateView();
 
@@ -145,6 +142,6 @@ public class Character : MonoBehaviour, IDamageable
 
     public void ResetChar()
     {
-        currentHealth = health;
+        currentHealth = maxHealth;
     }
 }

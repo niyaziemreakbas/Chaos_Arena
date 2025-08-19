@@ -1,4 +1,6 @@
+using DG.Tweening;
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,8 +10,11 @@ public class CardView : MonoBehaviour
     private CardData cardData;
 
     [SerializeField] TextMeshProUGUI cardName;
+
     [SerializeField] TextMeshProUGUI damage;
-    //[SerializeField] TextMeshProUGUI range;
+    [SerializeField] TextMeshProUGUI health;
+    [SerializeField] TextMeshProUGUI level;
+
     [SerializeField] Image cardImage;
 
     [SerializeField] GameObject melee;
@@ -19,13 +24,14 @@ public class CardView : MonoBehaviour
 
     [SerializeField] GameObject popUpFrame;
 
-    GameObject parentSlot;
+    CardController cardController;
 
-    public static event Action<CardView> OnCardViewClicked;
+    public static event Action<CardView> OnPopUpShown;
 
     private void Start()
     {
-        parentSlot = transform.parent.gameObject;
+        cardController = GetComponent<CardController>();
+        //parentSlot = transform.parent.gameObject;
     }
 
     public void SetCardData(CardData data)
@@ -45,7 +51,9 @@ public class CardView : MonoBehaviour
     void UpdateStatsUI()
     {
         cardName.text = cardData.cardName;
-        damage.text = $"Damage {cardData.damage.ToString()}";
+        damage.text = cardData.damage.ToString();
+        health.text = cardData.health.ToString();
+        level.text = cardData.Level.ToString();
 
         if (cardData.range < 2)
         {
@@ -81,19 +89,32 @@ public class CardView : MonoBehaviour
         //GetComponent<Image>().color = cardData.cardColor;
     }
 
-    public void TogglePopUpFrame()
+    public void OnCardClicked()
+    {
+        if(CardSwapManager.Instance.CanSwap() && gameObject.CompareTag("OnDeck"))
+        {
+            CardSwapManager.Instance.SwapCards(GetComponent<CardController>(), CardSwapManager.Instance.currentCard);
+        }
+        else
+        {
+            TogglePopUpFrame();
+        }
+
+       // TogglePopUpFrame();
+    }
+
+    private void TogglePopUpFrame()
     {
         if (popUpFrame.activeSelf)
         {
             popUpFrame.SetActive(false);
-            transform.SetParent(parentSlot.transform);
+            SetSlotToParent();
         }
         else
         {
-            transform.SetParent(popUpFrame.transform.root);
-            transform.SetAsLastSibling();
+            ShowCardOnFirst();
             popUpFrame.SetActive(true);
-            OnCardViewClicked?.Invoke(this);
+            OnPopUpShown?.Invoke(this);
         }
     }
 
@@ -102,18 +123,72 @@ public class CardView : MonoBehaviour
         if (sender != this) // baþkasý açtýysa
         {
             popUpFrame.SetActive(false);
-            transform.SetParent(parentSlot.transform);
+            //SetSlotToParent();
         }
+    }
+
+    public void OnEquipClicked()
+    {
+        CardSwapManager.Instance.SelectCurrentCard(GetComponent<CardController>());
+        StartCoroutine(EquipRoutine());
+    }
+
+    private IEnumerator EquipRoutine()
+    {
+        // Bring card to front
+        ShowCardOnFirst();
+        popUpFrame.SetActive(false);
+
+        // Move to center of the screen
+        yield return transform.DOMove(new Vector3(Screen.width / 2, Screen.height / 2, 0), 0.5f).WaitForCompletion();
+
+        // Animation handling
+        Tween rotateTween = transform.DORotate(new Vector3(0, 0, 10), 0.5f)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);
+
+        print("Card is being swapped, waiting for swap to complete...");
+
+        yield return new WaitUntil(() => CardSwapManager.Instance.SwapCompleted);
+
+        CardSwapManager.Instance.SwapCompleted = false;
+
+        // Stop Anim and go to currentSlot
+        rotateTween.Kill();
+        transform.rotation = Quaternion.identity;
+        print("Card swap completed, rotation stopped.");
+
+        StartCoroutine(MoveToSlot());
+    }
+
+    private void SetSlotToParent()
+    {
+        transform.SetParent(cardController.CurrentSlot.gameObject.transform);
+    }
+
+    private IEnumerator MoveToSlot()
+    {
+        SetSlotToParent();
+
+        yield return GetComponent<RectTransform>()
+            .DOAnchorPos(Vector2.zero, 0.5f)
+            .WaitForCompletion();
+    }
+
+    private void ShowCardOnFirst()
+    {
+        transform.SetParent(transform.root);
+        transform.SetAsLastSibling();
     }
 
     private void OnEnable()
     {
-        OnCardViewClicked += HandleOtherPopUpOpened;
+        OnPopUpShown += HandleOtherPopUpOpened;
     }
 
     private void OnDisable()
     {
-        OnCardViewClicked -= HandleOtherPopUpOpened;
+        OnPopUpShown -= HandleOtherPopUpOpened;
     }
 }
 

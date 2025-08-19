@@ -7,8 +7,12 @@ using UnityEngine;
 public class AIOwner : Owner
 {
     [SerializeField] private TextMeshProUGUI thinkingText;
+
+    // Think Delay
     private float minDelay = 3.0f;
     private float maxDelay = 5.0f;
+
+    IUpgradeDecisionStrategy upgradeDecisionStrategy;
 
     private void Start()
     {
@@ -18,6 +22,7 @@ public class AIOwner : Owner
     void Initialize()
     {
         unitRegistry.SelectedCharacters = DataManager.Instance.RandomlySelectDeck();
+        upgradeDecisionStrategy = OwnerManager.Instance.ReturnRandomStrategy();
         isUpward = false; // Assuming AI is always downward for now
     }
 
@@ -38,10 +43,11 @@ public class AIOwner : Owner
         StopCoroutine(thinkingAnim);
         thinkingText.text = "";
 
-        if (UpgradeManager.Instance.HandleCardUpgrades(UpgradeManager.Instance.ReturnRandomUpgradeCard(this), this))
+        List<UpgradeCardData> availableUpgrades = CardUpgradeManager.Instance.ReturnRandomUpgradeList(this, 4);
+
+        if (CardUpgradeManager.Instance.HandleCardUpgrades(upgradeDecisionStrategy.ChooseUpgrade(availableUpgrades, this), this))
         {
             OnUpgradePerformedFunction();
-
         }
     }
 

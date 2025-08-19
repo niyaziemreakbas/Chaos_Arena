@@ -47,7 +47,6 @@ public class CardData
         damage = cardSO.damage;
         range = cardSO.range;
         movementSpeed = cardSO.movementSpeed;
-        // attackSpeed = cardSO.attackSpeed;
         cardImage = cardSO.cardImage;
         cardColor = cardSO.cardColor;
         charPrefab = cardSO.charPrefab;
@@ -61,6 +60,7 @@ public class CardData
     public int GetUpgradeCost()
     {
         var del = goldExpr.ToDelegate("level");
+        Debug.Log("getu pgrade Cost func: " + del(level + 1));
         return Mathf.RoundToInt((float)del(level + 1));
     }
 
@@ -68,13 +68,14 @@ public class CardData
     public void UpgradeStats()
     {
         int cost = GetUpgradeCost();
-        if (PlayerInfo.gold < cost)
+        if (PlayerInfo.Instance.gold < cost)
         {
-            Debug.Log("Yeterli altýn yok!");
+            Debug.Log("Yeterli altýn yok! : " + cost);
+            Debug.Log("level : " + level);
             return;
         }
 
-        PlayerInfo.gold -= cost;
+        PlayerInfo.Instance.SetGold(-cost);;
         level++;
 
         // Yeni deðerleri hesapla

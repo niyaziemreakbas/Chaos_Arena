@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using UnityEditor.U2D.Animation;
 using UnityEngine;
 
-public class UpgradeManager : SingletonMonoBehaviour<UpgradeManager>
+public class CardUpgradeManager : SingletonMonoBehaviour<CardUpgradeManager>
 {
     public static Action<CharacterData, int, Owner> OnSpawnCharacter;
 
     [SerializeField] UpgradeWeightConfig upgradeWeightConfig;
 
-    // 
+    // Handles card upgrades for owner based on the upgrade card data
     public bool HandleCardUpgrades(UpgradeCardData upgradeCardData, Owner owner)
     {
         switch (upgradeCardData.upgradeType)

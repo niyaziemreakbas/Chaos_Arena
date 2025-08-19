@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class PlayerViewManager : MonoBehaviour
+public class UpgradeViewManager : MonoBehaviour
 {
     [SerializeField] GameObject upgradeCardsPanel;
 
@@ -27,8 +27,6 @@ public class PlayerViewManager : MonoBehaviour
     // Displays upgrade cards with random character data and upgrade types
     private void ShowCardUpgradeProp()
     {
-        print("Showing upgrade cards...");
-
         List<UpgradeCardData> selectedCards = new List<UpgradeCardData>();
 
         if (!upgradeCardsPanel.activeSelf)
@@ -36,9 +34,13 @@ public class PlayerViewManager : MonoBehaviour
             upgradeCardsPanel.SetActive(true);
         }
 
-        selectedCards = UpgradeManager.Instance.ReturnRandomUpgradeList(OwnerManager.Instance.PlayerOwner, upgradeCards.Count);
-
-        print($"Selected count : {selectedCards.Count} upgrade card count: {upgradeCards.Count}");
+        // DIAGNOSTIC
+        if (CardUpgradeManager.Instance == null) Debug.LogError("CardUpgradeManager.Instance == null");
+        if (OwnerManager.Instance == null) Debug.LogError("OwnerManager.Instance == null");
+        if (OwnerManager.Instance != null && OwnerManager.Instance.PlayerOwner == null) Debug.LogError("PlayerOwner == null");
+        if (upgradeCards == null) Debug.LogError("upgradeCards == null");
+        else if (upgradeCards.Count == 0) Debug.LogWarning("upgradeCards.Count == 0");
+        selectedCards = CardUpgradeManager.Instance.ReturnRandomUpgradeList(OwnerManager.Instance.PlayerOwner, upgradeCards.Count);
 
         for (int i = 0; i < upgradeCards.Count; i++)
         {
@@ -48,14 +50,13 @@ public class PlayerViewManager : MonoBehaviour
 
     public void HideUpgradeCards()
     {
-        print("Hiding upgrade cards...");
         if (upgradeCardsPanel.activeInHierarchy)
         {
             upgradeCardsPanel.SetActive(false);
         }
         else
         {
-            Debug.LogWarning("Upgrade cards panel is not assigned!");
+            Debug.Log("Upgrade cards panel is already closed!");
         }
     }
 }

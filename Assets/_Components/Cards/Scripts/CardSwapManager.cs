@@ -1,27 +1,46 @@
+using FurtleGame.Singleton;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardSwapManager : MonoBehaviour
+public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
 {
-    public static CardSwapManager Instance;
+    public CardController currentCard;
 
-    private void Awake()
+    public bool SwapCompleted = false;
+
+    public void SelectCurrentCard(CardController card)
     {
-        Instance = this;
+        currentCard = card;
     }
 
-    public void SwapCards(CardController card1, CardController card2)
+    public void SwapCards(CardController UpComingCard, CardController OnDeckCard)
     {
-        print($"Swapping cards: {card1.CardData.cardName} {card1.CurrentSlot.name} with {card2.CardData.cardName} {card2.CurrentSlot.name}");
+        UpComingCard.gameObject.tag = "OnDeck";
+        OnDeckCard.gameObject.tag = "Untagged";
 
-        CardSlot slot1 = card1.CurrentSlot;
-        CardSlot slot2 = card2.CurrentSlot;
+        CardSlot slot1 = UpComingCard.CurrentSlot;
+        CardSlot slot2 = OnDeckCard.CurrentSlot;
 
-        slot1.SetCurrentCard(card2);
-        slot2.SetCurrentCard(card1);
+        slot1.SetCurrentCard(OnDeckCard);
+        slot2.SetCurrentCard(UpComingCard);
 
-        print($"Swapped cards: {card1.CardData.cardName} {card1.CurrentSlot.name} with {card2.CardData.cardName} {card2.CurrentSlot.name}");
+        SwapCompleted = true;
 
+        currentCard = null;
+
+        print($"Swapped cards: {UpComingCard.CardData.cardName} {UpComingCard.CurrentSlot.name} with {OnDeckCard.CardData.cardName} {OnDeckCard.CurrentSlot.name}");
+
+    }
+
+    //public bool HasSwapped(CardView card)
+    //{
+    //    print($"Checking if swapped card: {card.CardData.cardName} is the last swapped card: {lastSwappedCard?.CardData.cardName}");
+    //    return lastSwappedCard == card;
+    //}
+
+    public bool CanSwap()
+    {
+        return currentCard != null;
     }
 }

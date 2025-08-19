@@ -45,7 +45,7 @@ public class PlayerOwner : Owner
     {
         if (GameStateManager.Instance.DecideCanUpgradeForOwner(this) || IsLosedLastFight)
         {
-            if(UpgradeManager.Instance.HandleCardUpgrades(upgradeCardData, this))
+            if(CardUpgradeManager.Instance.HandleCardUpgrades(upgradeCardData, this))
             {
                 OnUpgradePerformedFunction();
             }

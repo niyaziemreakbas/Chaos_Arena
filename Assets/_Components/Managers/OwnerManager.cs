@@ -74,4 +74,19 @@ public class OwnerManager : SingletonMonoBehaviour<OwnerManager>
         Debug.LogWarning("No enemy owner found for the given owner.");
         return null;
     }
+
+    public IUpgradeDecisionStrategy ReturnRandomStrategy()
+    {
+        List<IUpgradeDecisionStrategy> strategies = new List<IUpgradeDecisionStrategy>
+        {
+            new MaxUnitsStrategy(),
+            new RandomStrategy(),
+            new RangedFocusStrategy()
+        };
+
+        int randomIndex = Random.Range(0, strategies.Count);
+
+        print($"Selected Strategy: {strategies[randomIndex].GetType().Name}");
+        return strategies[randomIndex];
+    }
 }

@@ -29,9 +29,6 @@ public class CharMovementController : MonoBehaviour
     {
         if (GameStateManager.Instance.CurrentState != GameState.Fight)
             return;
-
-        print("We goingggg");
-
         switch (currentState)
         {
             case CharState.Idle:

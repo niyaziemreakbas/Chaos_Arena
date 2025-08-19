@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardSlot : MonoBehaviour, IDropHandler
+public class CardSlot : MonoBehaviour
 {
     private CardController currentCard;
 
@@ -31,10 +31,5 @@ public class CardSlot : MonoBehaviour, IDropHandler
     public bool HasCard()
     {
         return currentCard != null;
-    }
-
-    public void OnDrop(PointerEventData eventData)
-    {
-        //throw new System.NotImplementedException();
     }
 }

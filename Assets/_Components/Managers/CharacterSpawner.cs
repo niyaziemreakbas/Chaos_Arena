@@ -16,12 +16,12 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
 
     private void OnEnable()
     {
-        UpgradeManager.OnSpawnCharacter += SpawnCharacter;
+        CardUpgradeManager.OnSpawnCharacter += SpawnCharacter;
     }
 
     private void OnDisable()
     {
-        UpgradeManager.OnSpawnCharacter -= SpawnCharacter;
+        CardUpgradeManager.OnSpawnCharacter -= SpawnCharacter;
     }
 
     public void SpawnCharacter(CharacterData data, int count, Owner owner)
