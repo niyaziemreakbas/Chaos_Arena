@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
+public class CardPanelManager : SingletonMonoBehaviour<CardPanelManager>
 {
     CardController equipedCard;
     public CardController EquipedCard => equipedCard;
@@ -24,6 +24,14 @@ public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
 
     [SerializeField] private GameObject CardSlot;
 
+    [SerializeField] private GameObject UpgradePopUpFrame;
+
+    private CardUpgradeFrameView upgradeFrameView;
+    
+    private ColorBlock originalColors;
+
+
+
     List<CardSlot> slots = new List<CardSlot>();
     public List<CardSlot> Slots => slots;
 
@@ -40,13 +48,32 @@ public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
     {
         EmptySpaceButton.onClick.AddListener(() =>
         {
-            print("Empty space clicked");
-            ChangeState(CardState.Idle);
-            if(equipedCard != null)
-            {
-                UnEquipCard(equipedCard);
-            }
+            EmptySpaceButtonHandle();
         });
+
+        upgradeFrameView = UpgradePopUpFrame.GetComponent<CardUpgradeFrameView>();
+
+        originalColors = EmptySpaceButton.colors;
+
+    }
+
+    public void EmptySpaceButtonHandle()
+    {
+        if (currentState == CardState.Upgrading)
+        {
+            print("Upgrade frame clicked, closing it now.");
+            UpgradePopUpFrame.SetActive(false);
+            ChangeState(CardState.Idle);
+            return;
+        }
+
+        print("Empty space clicked");
+        UpgradePopUpFrame.SetActive(false);
+        ChangeState(CardState.Idle);
+        if (equipedCard != null)
+        {
+            UnEquipCard(equipedCard);
+        }
     }
 
     public void InitializeSlotsAndCards()
@@ -156,6 +183,19 @@ public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
                 }
             }
         }
+
+        else if (currentState == CardState.Upgrading)
+        {
+            var cb = EmptySpaceButton.colors;
+            cb.normalColor = new Color(0f, 0f, 0f, 0.5f);  // siyah yarý saydam
+            cb.highlightedColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+            cb.pressedColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
+            cb.selectedColor = cb.highlightedColor;
+            cb.disabledColor = cb.normalColor;
+            EmptySpaceButton.colors = cb;
+
+            UpgradePopUpFrame.SetActive(true);
+        }
     }
 
     public void HandleSlotClicked(CardSlot cardSlot)
@@ -183,6 +223,12 @@ public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
         HandleStatesOnCards();
     }
 
+    public void ShowElementOnFirst(Transform transform)
+    {
+        transform.SetParent(MenuController.Instance.cardsPanel.transform);
+        transform.SetAsLastSibling();
+    }
+
     public void RemoveCardFromDeck(CardController card)
     {
 
@@ -192,20 +238,31 @@ public class CardSwapManager : SingletonMonoBehaviour<CardSwapManager>
         //Destroy(card.gameObject);
     }
 
+    public void UpgradeFrameClicked(CardData card)
+    {
+        ChangeState(CardState.Upgrading);
+        ShowElementOnFirst(UpgradePopUpFrame.transform);
+        upgradeFrameView.SetCardData(card);
+        UpgradePopUpFrame.SetActive(true);
+    }
+
     private void OnEnable()
     {
         CardView.OnCardEquipped += HandleCardEquipClicked;
         CardView.OnCardClicked += HandleCardClicked;
+        CardView.OnCardUpgradeClicked += UpgradeFrameClicked;
     }
 
     private void OnDisable()
     {
         CardView.OnCardEquipped -= HandleCardEquipClicked;
         CardView.OnCardClicked -= HandleCardClicked;
+        CardView.OnCardUpgradeClicked -= UpgradeFrameClicked;
     }
 }
 public enum CardState
 {
     Idle,
     Equipped,
+    Upgrading
 }

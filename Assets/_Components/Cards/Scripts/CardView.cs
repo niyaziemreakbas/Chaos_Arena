@@ -32,6 +32,8 @@ public class CardView : MonoBehaviour
 
     public static event Action<CardView> OnCardClicked;
 
+    public static event Action<CardData> OnCardUpgradeClicked;
+
     public static event Action<CardView> OnCardEquipped;
 
     private void Start()
@@ -136,7 +138,7 @@ public class CardView : MonoBehaviour
         }
         else
         {
-            ShowElementOnFirst();
+            CardPanelManager.Instance.ShowElementOnFirst(transform);
             UpgradeEquipPopUpFrame.SetActive(true);
         }
     }
@@ -153,8 +155,9 @@ public class CardView : MonoBehaviour
     // Will be calling from every card view
 
     public void OnUpgradeClicked()
-    { 
-        UpgradeFrame.SetActive(true);
+    {
+        UpgradeEquipPopUpFrame.SetActive(false);
+        OnCardUpgradeClicked?.Invoke(cardData);
     }
 
     public void OnEquipClicked()
@@ -226,17 +229,13 @@ public class CardView : MonoBehaviour
             .WaitForCompletion();
     }
 
-    private void ShowElementOnFirst()
-    {
-        transform.SetParent(MenuController.Instance.cardsPanel.transform);
-        transform.SetAsLastSibling();
-    }
+
 
     public void SetEquiped()
     {
         UpgradeEquipPopUpFrame.SetActive(false);
         gameObject.SetActive(true); 
-        ShowElementOnFirst();
+        CardPanelManager.Instance.ShowElementOnFirst(transform);
         transform.DOMove(new Vector3(Screen.width / 2, Screen.height / 2, 0), 0.5f);
     }
 

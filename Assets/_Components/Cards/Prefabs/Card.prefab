@@ -507,6 +507,7 @@ MonoBehaviour:
   UpgradeEquipPopUpFrame: {fileID: 875373770832048094}
   EquipButton: {fileID: 6833591926974436632}
   RemoveButton: {fileID: 2013500227639896738}
+  UpgradeFrame: {fileID: 0}
 --- !u!225 &4467555753162555690
 CanvasGroup:
   m_ObjectHideFlags: 0

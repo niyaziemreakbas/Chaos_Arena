@@ -18,7 +18,7 @@ public class CardSlot : MonoBehaviour
         //print(CurrentCard.CardData.cardName);
 
         slotButton.onClick.AddListener(() => {
-            CardSwapManager.Instance.HandleSlotClicked(this);
+            CardPanelManager.Instance.HandleSlotClicked(this);
         });
     }
 
