@@ -1,8 +1,13 @@
+using FurtleGame.Singleton;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuController : MonoBehaviour
+public class MenuController : SingletonMonoBehaviour<MenuController>
 {
+    [Header("Sprites")]
+    [SerializeField] private Sprite activeSprite;
+    [SerializeField] private Sprite inactiveSprite;
+
     [SerializeField] Color lightColor;
     [SerializeField] Color darkColor;
 
@@ -24,7 +29,7 @@ public class MenuController : MonoBehaviour
     private RectTransform battleButtonRect;
     private RectTransform shopButtonRect;
 
-    private void Awake()
+    protected override void ChildAwake()
     {
         cardImage = cardsButton.GetComponent<Image>();
         battleImage = battleButton.GetComponent<Image>();
@@ -43,7 +48,6 @@ public class MenuController : MonoBehaviour
 
         // Baþlangýçta sadece battle paneli açýk olsun
         SetPanelActive(battlePanel, battleButton);
-        //SetButtonActive(battleButton);
     }
 
     private void SetPanelActive(GameObject activePanel, Button button)
@@ -52,22 +56,34 @@ public class MenuController : MonoBehaviour
         battlePanel.SetActive(activePanel == battlePanel);
         shopPanel.SetActive(activePanel == shopPanel);
 
-       // SetButtonActive(button);
+        SetButtonActive(button);
     }
 
-    private void SetButtonActive(Button button)
+    private void SetButtonActive(Button activeButton)
     {
-        // Tüm butonlarý varsayýlan renge ayarla
+        // Boyut deðerleri
+        Vector2 inactiveSize = new Vector2(350f, 180f);
+        Vector2 activeSize = new Vector2(400f, 200f);
+
+        // Hepsini inaktif yap
+        cardImage.sprite = inactiveSprite;
+        battleImage.sprite = inactiveSprite;
+        shopImage.sprite = inactiveSprite;
+
         cardImage.color = darkColor;
         battleImage.color = darkColor;
         shopImage.color = darkColor;
-        // Aktif butonu açýk renge ayarla
-        button.GetComponent<Image>().color = lightColor;
 
-        cardsButtonRect.sizeDelta = new Vector2(180f, cardsButtonRect.sizeDelta.y);
-        battleButtonRect.sizeDelta = new Vector2(180f, battleButtonRect.sizeDelta.y);
-        shopButtonRect.sizeDelta = new Vector2(180f, shopButtonRect.sizeDelta.y);
+        cardsButtonRect.sizeDelta = inactiveSize;
+        battleButtonRect.sizeDelta = inactiveSize;
+        shopButtonRect.sizeDelta = inactiveSize;
 
-        button.GetComponent<RectTransform>().sizeDelta = new Vector2(190f, button.GetComponent<RectTransform>().sizeDelta.y);
+        // Aktif olaný özel ayarla
+        Image activeImage = activeButton.GetComponent<Image>();
+        activeImage.sprite = activeSprite;
+        activeImage.color = lightColor;
+
+        RectTransform activeRect = activeButton.GetComponent<RectTransform>();
+        activeRect.sizeDelta = activeSize;
     }
 }

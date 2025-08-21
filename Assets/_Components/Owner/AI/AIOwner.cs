@@ -43,9 +43,9 @@ public class AIOwner : Owner
         StopCoroutine(thinkingAnim);
         thinkingText.text = "";
 
-        List<UpgradeCardData> availableUpgrades = CardUpgradeManager.Instance.ReturnRandomUpgradeList(this, 4);
+        List<UpgradeCardData> availableUpgrades = UpgradeCardManager.Instance.ReturnRandomUpgradeList(this, 4);
 
-        if (CardUpgradeManager.Instance.HandleCardUpgrades(upgradeDecisionStrategy.ChooseUpgrade(availableUpgrades, this), this))
+        if (UpgradeCardManager.Instance.HandleCardUpgrades(upgradeDecisionStrategy.ChooseUpgrade(availableUpgrades, this), this))
         {
             OnUpgradePerformedFunction();
         }

@@ -1,4 +1,4 @@
-using DG.Tweening;
+ï»¿using DG.Tweening;
 using System;
 using System.Collections;
 using TMPro;
@@ -22,25 +22,30 @@ public class CardView : MonoBehaviour
 
     [SerializeField] Image backGroundColor;
 
-    [SerializeField] GameObject popUpFrame;
+    [SerializeField] GameObject UpgradeEquipPopUpFrame;
+    [SerializeField] GameObject EquipButton;
+    [SerializeField] GameObject RemoveButton;
+
+    [SerializeField] GameObject UpgradeFrame;
 
     CardController cardController;
 
     public static event Action<CardView> OnCardClicked;
 
-    private bool forceStopEquip = false;
+    public static event Action<CardView> OnCardEquipped;
 
     private void Start()
     {
         cardController = GetComponent<CardController>();
-        //parentSlot = transform.parent.gameObject;
+
+        UpdateStatsUI();
     }
 
     public void SetCardData(CardData data)
     {
         cardData = data;
 
-        cardData.OnStatsChanged += UpdateStatsUI; // ?? C# event baðlantýsý
+        cardData.OnStatsChanged += UpdateStatsUI; // ?? C# event baÄŸlantÄ±sÄ±
         UpdateStatsUI();
     }
 
@@ -50,7 +55,7 @@ public class CardView : MonoBehaviour
             cardData.OnStatsChanged -= UpdateStatsUI;
     }
 
-    void UpdateStatsUI()
+    public void UpdateStatsUI()
     {
         cardName.text = cardData.cardName;
         damage.text = cardData.damage.ToString();
@@ -67,7 +72,6 @@ public class CardView : MonoBehaviour
             melee.SetActive(false);
             ranged.SetActive(true);
         }
-
 
         switch (cardData.cardName)
         {
@@ -88,113 +92,153 @@ public class CardView : MonoBehaviour
         //range.text = cardData.range < 2 ? "Melee" : "Ranged";
         cardImage.sprite = cardData.cardImage;
 
+        if(gameObject.CompareTag("Deck"))
+        {
+            EquipButton.SetActive(false);
+            RemoveButton.SetActive(true);
+        }
+        else if (gameObject.CompareTag("Collection"))
+        {
+            EquipButton.SetActive(true);
+            RemoveButton.SetActive(false);
+        }
+
+        UpgradeEquipPopUpFrame.SetActive(false);
+
         //GetComponent<Image>().color = cardData.cardColor;
     }
 
-    public void OnCardClickedFunction()
+    //private void HandleCardClicked(CardView clickedCard)
+    //{
+    //    if (clickedCard == this)
+    //    {
+    //        TogglePopUpFrame();
+    //    }
+    //    else if (UpgradeEquipPopUpFrame.activeSelf)
+    //    {
+    //        UpgradeEquipPopUpFrame.SetActive(false);
+    //        SetSlotToParent();
+    //    }
+    //}
+
+    // Reference from card button
+    public void OnCardClickedFunc()
     {
-        if(CardSwapManager.Instance.CanSwap() && gameObject.CompareTag("OnDeck"))
+        OnCardClicked?.Invoke(this);
+    }
+
+    public void TogglePopUpFrame()
+    {
+        if (UpgradeEquipPopUpFrame.activeSelf)
         {
-            CardSwapManager.Instance.SwapCards(GetComponent<CardController>(), CardSwapManager.Instance.currentCard);
+            UpgradeEquipPopUpFrame.SetActive(false);
+            gameObject.transform.SetParent(cardController.CurrentSlot.transform);
         }
         else
         {
-            TogglePopUpFrame();
-        }
-
-       // TogglePopUpFrame();
-    }
-
-    private void TogglePopUpFrame()
-    {
-        if (popUpFrame.activeSelf)
-        {
-            popUpFrame.SetActive(false);
-            SetSlotToParent();
-        }
-        else
-        {
-            ShowCardOnFirst();
-            popUpFrame.SetActive(true);
-            OnCardClicked?.Invoke(this);
+            ShowElementOnFirst();
+            UpgradeEquipPopUpFrame.SetActive(true);
         }
     }
 
-    private void HandleOtherCardClicked(CardView sender)
-    {
-        print($"Card clicked: {sender.cardData.cardName}");
-        print($"Current card: {this.cardData.cardName}");
-        if (sender != this)
-        {
-            print("Another card clicked, closing pop-up frame if open.");
-            popUpFrame.SetActive(false);
-            forceStopEquip = true; // force stop equip animation
-        }
+    //private void HandleSwapCompleted(CardController swappedCardFromDeck)
+    //{
+    //    if (swappedCardFromDeck == cardController)
+    //    {
+    //        print(swappedCardFromDeck.name + " has been swapped, closing pop-up frame if open.");
+    //        UpgradeEquipPopUpFrame.SetActive(false);
+    //    }
+    //}
+
+    // Will be calling from every card view
+
+    public void OnUpgradeClicked()
+    { 
+        UpgradeFrame.SetActive(true);
     }
 
     public void OnEquipClicked()
     {
-        CardSwapManager.Instance.SelectCurrentCard(GetComponent<CardController>());
-        StartCoroutine(EquipRoutine());
+        UpgradeEquipPopUpFrame.SetActive(false);
+        OnCardEquipped?.Invoke(this);
+    }
+    public void OnRemoveClicked()
+    {
+        print("Not implemented for now");
+        //UpgradeEquipPopUpFrame.SetActive(false);
+        //CardSwapManager.Instance.RemoveCardFromDeck(cardController);
     }
 
-    private IEnumerator EquipRoutine()
+    //private IEnumerator EquipRoutine()
+    //{
+    //    // Bring card to front
+    //    ShowCardOnFirst();
+    //    popUpFrame.SetActive(false);
+
+    //    // Move to center of the screen
+    //    yield return transform.DOMove(new Vector3(Screen.width / 2, Screen.height / 2, 0), 0.5f).WaitForCompletion();
+
+    //    // Animation handling
+    //    Tween rotateTween = transform.DORotate(new Vector3(0, 0, 10), 0.5f)
+    //        .SetLoops(-1, LoopType.Yoyo)
+    //        .SetEase(Ease.InOutSine);
+
+    //    print("Card is being swapped, waiting for swap to complete...");
+
+    //    yield return new WaitUntil(() => swappedSuccessfully || swapInterrupted);
+
+    //    if (swapInterrupted)
+    //    {
+    //        CardSwapManager.Instance.ClearCard();
+    //    }
+
+    //    print("Force stop equip false.");
+    //    swappedSuccessfully = false;
+    //    swapInterrupted = false;
+    //    transform.rotation = Quaternion.identity;
+
+    //    // Stop Anim and go to currentSlot
+    //    rotateTween.Kill();
+    //    print("Card swap completed, rotation stopped.");
+
+    //    StartCoroutine(MoveToSlot());
+    //}
+
+
+    public void MoveToSlot()
     {
-        // Bring card to front
-        ShowCardOnFirst();
-        popUpFrame.SetActive(false);
-
-        // Move to center of the screen
-        yield return transform.DOMove(new Vector3(Screen.width / 2, Screen.height / 2, 0), 0.5f).WaitForCompletion();
-
-        // Animation handling
-        Tween rotateTween = transform.DORotate(new Vector3(0, 0, 10), 0.5f)
-            .SetLoops(-1, LoopType.Yoyo)
-            .SetEase(Ease.InOutSine);
-
-        print("Card is being swapped, waiting for swap to complete...");
-
-        yield return new WaitUntil(() => CardSwapManager.Instance.SwapCompleted || forceStopEquip);
-
-        forceStopEquip = false;
-        CardSwapManager.Instance.SwapCompleted = false;
-
-        // Stop Anim and go to currentSlot
-        rotateTween.Kill();
-        transform.rotation = Quaternion.identity;
-        print("Card swap completed, rotation stopped.");
-
-        StartCoroutine(MoveToSlot());
+        if (cardController.CurrentSlot != null)
+        {
+            StartCoroutine(MoveToSlotCoroutine());
+        }
+        else
+        {
+            print("Current slot is null, cannot move card to slot.");
+        }
     }
 
-    private void SetSlotToParent()
+    private IEnumerator MoveToSlotCoroutine()
     {
-        transform.SetParent(cardController.CurrentSlot.gameObject.transform);
-    }
-
-    public IEnumerator MoveToSlot()
-    {
-        SetSlotToParent();
+        print("Moving card to its slot: " + cardController.CardData.cardName);
 
         yield return GetComponent<RectTransform>()
             .DOAnchorPos(Vector2.zero, 0.5f)
             .WaitForCompletion();
     }
 
-    private void ShowCardOnFirst()
+    private void ShowElementOnFirst()
     {
-        transform.SetParent(transform.root);
+        transform.SetParent(MenuController.Instance.cardsPanel.transform);
         transform.SetAsLastSibling();
     }
 
-    private void OnEnable()
+    public void SetEquiped()
     {
-        OnCardClicked += HandleOtherCardClicked;
+        UpgradeEquipPopUpFrame.SetActive(false);
+        gameObject.SetActive(true); 
+        ShowElementOnFirst();
+        transform.DOMove(new Vector3(Screen.width / 2, Screen.height / 2, 0), 0.5f);
     }
 
-    private void OnDisable()
-    {
-        OnCardClicked -= HandleOtherCardClicked;
-    }
 }
 

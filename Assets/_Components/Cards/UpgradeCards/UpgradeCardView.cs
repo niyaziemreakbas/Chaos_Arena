@@ -50,7 +50,7 @@ public class UpgradeCardView : MonoBehaviour
             case UpgradeType.Upgrader:
                 doubleImage.gameObject.SetActive(false);
                 upgradeImage.gameObject.SetActive(true);
-                upgradeType.text = $"Stat Upgrade";
+                upgradeType.text = $"Upgrade";
               //  ActivateStars();
                 break;
             case UpgradeType.Spawner:

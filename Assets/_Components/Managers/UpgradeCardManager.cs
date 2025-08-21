@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardUpgradeManager : SingletonMonoBehaviour<CardUpgradeManager>
+public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
 {
     public static Action<CharacterData, int, Owner> OnSpawnCharacter;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CardController : MonoBehaviour
 {
@@ -13,17 +10,39 @@ public class CardController : MonoBehaviour
     private CardSlot currentSlot;
     public CardSlot CurrentSlot => currentSlot;
 
-    private CardView view;
+    private CardView cardView;
+    public CardView CardView => cardView;
+
+    private bool isEquiped;
+    public bool IsEquiped => isEquiped;
+
+    public void SetChooseState(bool state)
+    {
+        isEquiped = state;
+    }
 
     private void Awake()
     {
         cardData = new CardData(cardSO);
-        view = GetComponent<CardView>();
-        view.SetCardData(cardData);
+
+        Initialize(cardData);
+    }
+
+    public void Initialize(CardData cardData)
+    {
+        cardView = GetComponent<CardView>();
+        cardView.SetCardData(cardData);
     }
 
     public void SetCurrentSlot(CardSlot slot)
     {
+        //slot != currentSlot
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        if (rectTransform.anchoredPosition != Vector2.zero && currentSlot != null)
+        {
+            CardView.MoveToSlot();
+        }
+
         currentSlot = slot;
     }
 

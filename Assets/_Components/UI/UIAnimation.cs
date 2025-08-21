@@ -11,10 +11,13 @@ public class UIAnimation : MonoBehaviour
     private Tween pulseTween;
     private Vector3 initialScale;
 
-    private void OnEnable()
+    private void Awake()
     {
         initialScale = transform.localScale;
+    }
 
+    private void OnEnable()
+    {
         // Sonsuz döngü ile ölçek deðiþimi
         pulseTween = transform.DOScale(initialScale * pulseScale, duration)
                  .SetLoops(-1, LoopType.Yoyo)

@@ -35,12 +35,12 @@ public class UpgradeViewManager : MonoBehaviour
         }
 
         // DIAGNOSTIC
-        if (CardUpgradeManager.Instance == null) Debug.LogError("CardUpgradeManager.Instance == null");
+        if (UpgradeCardManager.Instance == null) Debug.LogError("CardUpgradeManager.Instance == null");
         if (OwnerManager.Instance == null) Debug.LogError("OwnerManager.Instance == null");
         if (OwnerManager.Instance != null && OwnerManager.Instance.PlayerOwner == null) Debug.LogError("PlayerOwner == null");
         if (upgradeCards == null) Debug.LogError("upgradeCards == null");
         else if (upgradeCards.Count == 0) Debug.LogWarning("upgradeCards.Count == 0");
-        selectedCards = CardUpgradeManager.Instance.ReturnRandomUpgradeList(OwnerManager.Instance.PlayerOwner, upgradeCards.Count);
+        selectedCards = UpgradeCardManager.Instance.ReturnRandomUpgradeList(OwnerManager.Instance.PlayerOwner, upgradeCards.Count);
 
         for (int i = 0; i < upgradeCards.Count; i++)
         {

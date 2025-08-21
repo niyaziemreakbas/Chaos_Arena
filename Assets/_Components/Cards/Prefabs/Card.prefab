@@ -436,7 +436,7 @@ GameObject:
   - component: {fileID: 3507685068262920556}
   m_Layer: 0
   m_Name: Card
-  m_TagString: Untagged
+  m_TagString: Deck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -504,7 +504,9 @@ MonoBehaviour:
   melee: {fileID: 5565887740420289727}
   ranged: {fileID: 7303382996823725160}
   backGroundColor: {fileID: 7303382996910564979}
-  popUpFrame: {fileID: 875373770832048094}
+  UpgradeEquipPopUpFrame: {fileID: 875373770832048094}
+  EquipButton: {fileID: 6833591926974436632}
+  RemoveButton: {fileID: 2013500227639896738}
 --- !u!225 &4467555753162555690
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -571,7 +573,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3269769257818009403}
         m_TargetAssemblyTypeName: CardView, Assembly-CSharp
-        m_MethodName: OnCardClickedFunction
+        m_MethodName: OnCardClickedFunc
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2150,6 +2152,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 3269769257818009403}
+    - target: {fileID: 4908264550254273254, guid: 17bb7f9a6376d6b4086830dcc6bb56d8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3269769257818009403}
     - target: {fileID: 7267538882046646528, guid: 17bb7f9a6376d6b4086830dcc6bb56d8, type: 3}
       propertyPath: m_Name
       value: CardUpgradeFrame
@@ -2251,5 +2257,15 @@ GameObject:
 --- !u!224 &875373770832048095 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7267538882046646529, guid: 17bb7f9a6376d6b4086830dcc6bb56d8, type: 3}
+  m_PrefabInstance: {fileID: 7565642569818420958}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2013500227639896738 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8291105047509294204, guid: 17bb7f9a6376d6b4086830dcc6bb56d8, type: 3}
+  m_PrefabInstance: {fileID: 7565642569818420958}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6833591926974436632 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3903288767000110022, guid: 17bb7f9a6376d6b4086830dcc6bb56d8, type: 3}
   m_PrefabInstance: {fileID: 7565642569818420958}
   m_PrefabAsset: {fileID: 0}

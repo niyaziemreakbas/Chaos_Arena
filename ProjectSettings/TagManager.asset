@@ -9,6 +9,8 @@ TagManager:
   - Card
   - OnDragCards
   - OnDeck
+  - Collection
+  - Deck
   layers:
   - Default
   - TransparentFX
