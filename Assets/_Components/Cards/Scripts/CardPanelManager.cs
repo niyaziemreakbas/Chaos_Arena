@@ -30,7 +30,9 @@ public class CardPanelManager : SingletonMonoBehaviour<CardPanelManager>
     
     private ColorBlock originalColors;
 
+    [SerializeField] GameObject FadePanel;
 
+    [SerializeField] GameObject EmptySpaceClick;
 
     List<CardSlot> slots = new List<CardSlot>();
     public List<CardSlot> Slots => slots;
@@ -61,6 +63,8 @@ public class CardPanelManager : SingletonMonoBehaviour<CardPanelManager>
     {
         if (currentState == CardState.Upgrading)
         {
+            FadePanel.SetActive(false);
+            EmptySpaceClick.transform.SetAsFirstSibling();
             print("Upgrade frame clicked, closing it now.");
             UpgradePopUpFrame.SetActive(false);
             ChangeState(CardState.Idle);
@@ -162,7 +166,6 @@ public class CardPanelManager : SingletonMonoBehaviour<CardPanelManager>
             foreach(var slot in slots)
             {
                 slot.gameObject.SetActive(true);
-                print($"Setting slot: {slot.name} to active");
                 slot.SetCurrentCard(slot.CurrentCard);
                 slot.CurrentCard.CardView.UpdateStatsUI();
             }
@@ -240,6 +243,10 @@ public class CardPanelManager : SingletonMonoBehaviour<CardPanelManager>
 
     public void UpgradeFrameClicked(CardData card)
     {
+        ShowElementOnFirst(FadePanel.transform);
+        FadePanel.SetActive(true);
+        EmptySpaceClick.transform.SetAsLastSibling();
+
         ChangeState(CardState.Upgrading);
         ShowElementOnFirst(UpgradePopUpFrame.transform);
         upgradeFrameView.SetCardData(card);

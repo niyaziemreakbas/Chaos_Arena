@@ -6,7 +6,7 @@ public class UnitRegistry
     //Selected characters from the card selection
     public List<CharacterData> SelectedCharacters { get; set; } = new List<CharacterData>();
 
-    // List for characters that are ordered by priority level, can be used for showing spawned characters
+    // List for characters that are ordered by priority level, can be used for showing spawned character data types
     public List<CharacterData> CharacterOrder { get; private set; } = new List<CharacterData>();
 
     // Dictionary to hold unit gameObjects grouped by character name, used for repositioning characters 

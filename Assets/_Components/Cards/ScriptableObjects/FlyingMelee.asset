@@ -16,7 +16,7 @@ MonoBehaviour:
   health: 120
   damage: 40
   range: 1
-  movementSpeed: 2
+  movementSpeed: 1.1
   attackSpeed: 5
   priorityLevel: 2
   spawnCount: 4

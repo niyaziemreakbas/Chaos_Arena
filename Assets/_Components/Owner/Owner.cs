@@ -45,7 +45,6 @@ public abstract class Owner : MonoBehaviour
         {
             if (upgradeCount != value)
             {
-                print($"Upgrade count changed for {OwnerName}: {upgradeCount} -> {value}");
                 upgradeCount = value;
                 OnDataChanged?.Invoke();
             }
@@ -94,37 +93,13 @@ public abstract class Owner : MonoBehaviour
             case GameState.Fight:
                 HandleFightState();
                 break;
-            //case GameState.BonusRound:
-            //    HandleBonusState();
-            //    break;
             default:
                 Debug.LogWarning("Unhandled game state!");
                 break;
         }
-       // print(unitRegistry.SpawnedCharacters.Count + " current spawned char Count for owner: " + OwnerName);
-
     }
 
     protected abstract void HandleUpgradeState();
-
-    //protected virtual void HandleBonusState()
-    //{
-    //    if (isLosedLastFight)
-    //    {
-    //        print($"{OwnerName} is in bonus state after losing last fight!");
-
-    //        HandleUpgradeState();
-
-    //        IsLosedLastFight = false;
-
-    //        OnBonusPlayed?.Invoke();
-    //    }
-    //    else
-    //    {
-    //        print($"{OwnerName} is in bonus state, but did not lose last fight. Skipping upgrade state.");
-    //        return;
-    //    }
-    //}
 
     protected virtual void HandleFightState()
     {

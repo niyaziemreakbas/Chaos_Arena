@@ -46,36 +46,75 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
     // Selects an upgrade type based on character data
     public UpgradeType SelectRandomUpgradeType(CharacterData charData, Owner owner)
     {
-        List<(UpgradeType type, float weight)> availableOptions = new();
+        List<UpgradeType> upgradeTypes = new();
+        print($"Randomly Choosing for {owner.OwnerName} Upgrade Count : {owner.UpgradeCount}");
 
-        if (CheckDoubleValidity(charData, owner))
-            availableOptions.Add((UpgradeType.Doubler, upgradeWeightConfig.GetWeight(UpgradeType.Doubler)));
+        //if(CheckUpgradeValidity(charData, owner))
+        //{
+        //    Debug.Log("Be careful Upgrade is not valid");
+        //}
 
-        if (CheckUpgradeValidity(charData, owner))
-            availableOptions.Add((UpgradeType.Upgrader, upgradeWeightConfig.GetWeight(UpgradeType.Upgrader)));
+        //if (CheckDoubleValidity(charData, owner))
+        //{
+        //    Debug.Log("Be careful Double is not valid");
+        //}
 
-        availableOptions.Add((UpgradeType.Spawner, upgradeWeightConfig.GetWeight(UpgradeType.Spawner)));
-
-        if (availableOptions.Count == 0)
-            return UpgradeType.Spawner;
-
-        // Adds weights to totalWeight which is in the available options
-        float totalWeight = 0;
-        foreach (var option in availableOptions)
-            totalWeight += option.weight;
-
-        float randomValue = UnityEngine.Random.value * totalWeight;
-        float cumulative = 0;
-
-        foreach (var option in availableOptions)
+        if (CheckDoubleValidity(charData, owner) && owner.UpgradeCount == 2)
         {
-            cumulative += option.weight;
-            if (randomValue <= cumulative)
-                return option.type;
+            print("Double upgrade is available for selection." + owner.OwnerName + "UpgradeCount : " + owner.UpgradeCount);
+            upgradeTypes.Add(UpgradeType.Doubler);
+            print(upgradeTypes.Count + "double added");
         }
 
-        print("Upgrade Type could not be selected, an error occurred.");
-        return availableOptions[0].type; // fallback
+        if (CheckUpgradeValidity(charData, owner) && owner.UpgradeCount == 2)
+        {
+            print("Upgrade is available for selection." + owner.OwnerName + "UpgradeCount : " + owner.UpgradeCount);
+            upgradeTypes.Add(UpgradeType.Upgrader);
+            print(upgradeTypes.Count + "upgrade added");
+        }
+
+        if (owner.UpgradeCount < 2 || upgradeTypes.Count == 0)
+        {
+            print("Spawner upgrade is available for selection, because owner has less than 2 upgrades." + owner.OwnerName);
+            upgradeTypes.Add(UpgradeType.Spawner);
+
+        }
+
+        print(upgradeTypes.Count + " upgrade types available for selection." + owner.OwnerName + "UpgradeCount : " + owner.UpgradeCount);
+        int randomIndex = UnityEngine.Random.Range(0, upgradeTypes.Count);
+
+        return upgradeTypes[randomIndex];
+
+        //List<(UpgradeType type, float weight)> availableOptions = new();
+
+
+        //if (CheckDoubleValidity(charData, owner))
+        //    availableOptions.Add((UpgradeType.Doubler, upgradeWeightConfig.GetWeight(UpgradeType.Doubler)));
+
+        //if (CheckUpgradeValidity(charData, owner))
+        //    availableOptions.Add((UpgradeType.Upgrader, upgradeWeightConfig.GetWeight(UpgradeType.Upgrader)));
+
+        //availableOptions.Add((UpgradeType.Spawner, upgradeWeightConfig.GetWeight(UpgradeType.Spawner)));
+
+
+
+        //// Adds weights to totalWeight which is in the available options
+        //float totalWeight = 0;
+        //foreach (var option in availableOptions)
+        //    totalWeight += option.weight;
+
+        //float randomValue = UnityEngine.Random.value * totalWeight;
+        //float cumulative = 0;
+
+        //foreach (var option in availableOptions)
+        //{
+        //    cumulative += option.weight;
+        //    if (randomValue <= cumulative)
+        //        return option.type;
+        //}
+
+        //print("Upgrade Type could not be selected, an error occurred.");
+        //return availableOptions[0].type; // fallback
     }
 
     // Creates a random upgrade card based on the selected owner
@@ -91,6 +130,7 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
         {
             attempts++;
 
+            //print(attempts + " attempts made to select upgrade cards. Selected: " + selectedCards.Count + ", Required: " + selectCount + "Owner : " + owner.OwnerName);
             CharacterData charData = SelectRandomChar(owner);
             UpgradeType upgradeType = SelectRandomUpgradeType(charData, owner);
 
@@ -115,6 +155,13 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
 
             selectedCards.Add(upgradeCardData);
         }
+
+        while (selectedCards.Count < selectCount)
+        {
+            print($"Not enough upgrade cards selected, adding random upgrade card. Selected: {selectedCards.Count}, Required: {selectCount}");
+            selectedCards.Add(ReturnRandomUpgradeCard(owner));
+        }
+
         return selectedCards;
     }
 
@@ -139,16 +186,16 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
     // Checks if the character can be upgraded based on its level
     private bool CheckUpgradeValidity(CharacterData charData, Owner owner)
     {
+        if (!CheckCharExistence(charData, owner))
+        {
+            return false; // Character does not exist in the game scene
+        }
         if (charData.charLevel >= 3)
         {
             //Debug.LogWarning("Character is already at max level!");
             return false;
         }
-        if(!CheckCharExistence(charData, owner))
-        {
-           // Debug.Log($"No character with name {charData.charName} exists in the game scene.");
-            return false; // Character does not exist in the game scene
-        }
+
         return true;
     }
 
@@ -170,10 +217,36 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
     // Checks if there is at least one character with the same name in the selected characters
     private bool CheckDoubleValidity(CharacterData charData, Owner owner)
     {
-        if (CheckCharExistence(charData, owner))
+        if (!CheckCharExistence(charData, owner))
+        {
+            return false; // Character cant be doubled
+        }
+
+
+        owner.UnitRegistry.UnitGroups.TryGetValue(charData.charName, out List<GameObject> value);
+        int charCount = value.Count;
+        print("Char Count from Owner : " + owner.OwnerName + " " + charCount);
+        if (charCount < 25)
         {
             return true; // Character can be doubled
         }
+
+        //if (owner == null)
+        //{
+        //    Debug.LogError("Owner is NULL in CheckDoubleValidity!");
+        //}
+        //else if (owner.UnitRegistry == null)
+        //{
+        //    Debug.LogError($"UnitRegistry is NULL for owner {owner.OwnerName}");
+        //}
+        //else if (owner.UnitRegistry.UnitGroups == null)
+        //{
+        //    Debug.LogError($"UnitGroups dictionary is NULL for owner {owner.OwnerName}");
+        //}
+        //else
+        //{
+        //    Debug.Log($"Checking UnitGroups for {charData.charName}, UnitGroups count: {owner.UnitRegistry.UnitGroups.Count}");
+        //}
 
         return false;
     }

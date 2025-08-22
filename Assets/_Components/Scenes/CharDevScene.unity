@@ -265,6 +265,10 @@ PrefabInstance:
       propertyPath: UpgradeCount
       value: 
       objectReference: {fileID: 1871729169}
+    - target: {fileID: 2017334003703037861, guid: 641209f53917ecb40a88a067cd7e8ce1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.26
+      objectReference: {fileID: 0}
     - target: {fileID: 5513963877594222764, guid: 641209f53917ecb40a88a067cd7e8ce1, type: 3}
       propertyPath: OwnerName
       value: 
@@ -285,6 +289,10 @@ PrefabInstance:
       propertyPath: thinkingText
       value: 
       objectReference: {fileID: 666117364}
+    - target: {fileID: 7810207251375782358, guid: 641209f53917ecb40a88a067cd7e8ce1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -5.56
+      objectReference: {fileID: 0}
     - target: {fileID: 8038232648274617759, guid: 641209f53917ecb40a88a067cd7e8ce1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1783,23 +1791,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 0
-  spawnInterval: 3
-  maxUnitsPerRow: 10
-  spacingY: 1
---- !u!114 &5346068315660287443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6392421923350714930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfa1774ec4545b4439000c8e0ba187e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 0
-  upgradeWeightConfig: {fileID: 11400000, guid: 09ab2ba25c9107d469b82c63ae130502, type: 2}
+  maxUnitsPerRow: 12
+  spacingY: 0.8
 --- !u!114 &5615783109462034972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1827,8 +1820,8 @@ GameObject:
   - component: {fileID: 5615783109462034972}
   - component: {fileID: 7206247909828185005}
   - component: {fileID: 8298634384951161927}
-  - component: {fileID: 5346068315660287443}
   - component: {fileID: 8298634384951161928}
+  - component: {fileID: 8298634384951161929}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2014,6 +2007,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0ff8f34801dc291418661748e1d74074, type: 2}
   - {fileID: 11400000, guid: 9eb285768ea2e004186f7c59ec4bb9ec, type: 2}
   - {fileID: 11400000, guid: 65bf6a0e72379ec43abf718e1e56cbef, type: 2}
+--- !u!114 &8298634384951161929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6392421923350714930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ff1f9dc7db5e7d469ed64f61dc834fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 0
+  upgradeWeightConfig: {fileID: 11400000, guid: 09ab2ba25c9107d469b82c63ae130502, type: 2}
 --- !u!1001 &8359842924760539787
 PrefabInstance:
   m_ObjectHideFlags: 0

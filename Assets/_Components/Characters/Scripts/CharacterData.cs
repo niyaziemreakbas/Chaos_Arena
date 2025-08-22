@@ -19,7 +19,7 @@ public class CharacterData
 
     public float range;
 
-    public int movementSpeed;
+    public float movementSpeed;
 
     public int spawnCount;
 

@@ -49,15 +49,12 @@ public class OwnerView : MonoBehaviour
         OwnerName.color = owner.teamColor;
         UpgradeCount.color = owner.teamColor;
 
-        print("owner view called " + OwnerName.text);
         if (owner.IsLosedLastFight)
         {
-            print("activating");
             BonusRound.SetActive(true);
         }
         else
         {
-            print("deactivating");
             BonusRound.SetActive(false);
         }
     }

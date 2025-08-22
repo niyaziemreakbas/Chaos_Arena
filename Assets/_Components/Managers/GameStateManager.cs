@@ -128,7 +128,6 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
 
         foreach (var owner in owners)
         {
-            print($": {owner.OwnerName} upgrade count: {owner.UpgradeCount} target count: {targetCount}");
             if (owner.UpgradeCount != targetCount)
             {
                 return false;

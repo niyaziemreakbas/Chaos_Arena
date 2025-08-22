@@ -23,6 +23,8 @@ public class Character : MonoBehaviour, IDamageable
     private CharMovementController movementController;
     private CharacterView characterView;
 
+    public Vector2Int GridPos { get; set; }
+
     [Header("Flash System")]
     [SerializeField] public Transform CharModel;
     private SpriteRenderer spriteRenderer;

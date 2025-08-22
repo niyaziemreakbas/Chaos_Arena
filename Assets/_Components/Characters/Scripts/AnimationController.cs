@@ -42,120 +42,123 @@ public class AnimationController : MonoBehaviour
     private CharacterState currentState;
     public CharacterState CurrentState => currentState;
 
-    Tween currentTween;
+    Sequence currentSequence;
 
     void Start()
     {
-
-        charModel = GetComponent<Character>().CharModel;
-
-        initialLocalPosition = charModel.localPosition;
-        initialRotation = swordModel.localRotation;
-
-
-
-        //PlayIdleAnimation();
-        //PlayRunAnimation();
-        //StartCoroutine(SwordSwing());
-        //SetState(CharacterState.Idle);
-
-        //print(gameObject.name + " : Character initialized in state: " + currentState);
+        HandleState();
     }
 
-    //public void SetState(CharacterState newState)
+    Sequence PlayIdleAnimation()
+    {
+        float scaleAmount = 0.02f;
+        float timeAmount = 0.38f;
+        float frontRotateAmount = 4f;
+        float backRotateAmount = 3f;
+
+        var rotateSequence = DOTween.Sequence();
+
+        rotateSequence.Append(transform.DORotate(new Vector3(0, 0, -frontRotateAmount), timeAmount).SetEase(Ease.Linear));
+        rotateSequence.Append(transform.DORotate(new Vector3(0, 0, 0), timeAmount).SetEase(Ease.Linear));
+        rotateSequence.Append(transform.DORotate(new Vector3(0, 0, backRotateAmount), timeAmount).SetEase(Ease.Linear));
+        rotateSequence.Append(transform.DORotate(new Vector3(0, 0, 0), timeAmount).SetEase(Ease.Linear));
+
+        var scaleSequence = DOTween.Sequence();
+
+        float localScale = transform.localScale.y;
+        scaleSequence.Append(transform.DOScaleY(localScale - scaleAmount, timeAmount).SetEase(Ease.Linear));
+        scaleSequence.Append(transform.DOScaleY(localScale, timeAmount).SetEase(Ease.Linear));
+        scaleSequence.Append(transform.DOScaleY(localScale - scaleAmount, timeAmount).SetEase(Ease.Linear));
+        scaleSequence.Append(transform.DOScaleY(localScale, timeAmount).SetEase(Ease.Linear));
+
+        var masterSequence = DOTween.Sequence();
+        masterSequence.Append(rotateSequence);
+        masterSequence.Join(scaleSequence);
+
+        masterSequence.SetLoops(-1);
+
+        return masterSequence;
+    }
+
+    Sequence PlayRunAnimation()
+    {
+        float jumpAmount = 0.01f;
+        float timeAmount = 0.3f;
+        var rotateSequence = DOTween.Sequence();
+
+        rotateSequence.Append(transform.DOLocalMove(new Vector3(transform.position.x, transform.position.y+jumpAmount , transform.position.z), timeAmount).SetLoops(-1, LoopType.Yoyo));
+
+        //float frontRotateAmount = 4f;
+        //float backRotateAmount = 3f;
+
+        //rotateSequence.Append(transform.DORotate(new Vector3(0, 0, -frontRotateAmount), timeAmount).SetEase(Ease.Linear));
+        //rotateSequence.Append(transform.DORotate(new Vector3(0, 0, 0), timeAmount).SetEase(Ease.Linear));
+        //rotateSequence.Append(transform.DORotate(new Vector3(0, 0, backRotateAmount), timeAmount).SetEase(Ease.Linear));
+        //rotateSequence.Append(transform.DORotate(new Vector3(0, 0, 0), timeAmount).SetEase(Ease.Linear));
+        //rotateSequence.SetLoops(-1);
+
+        return rotateSequence;
+    }
+
+    public void ChangeState(CharacterState newState)
+    {
+        if(newState == currentState)
+            return;
+
+        currentState = newState;
+        HandleState();
+    }
+
+    void HandleState()
+    {
+        switch (currentState)
+        {
+            case CharacterState.Idle:
+                currentSequence = null;
+                currentSequence = PlayIdleAnimation();
+                break;
+            case CharacterState.Move:
+                currentSequence = null;
+                currentSequence = PlayRunAnimation();
+                break;
+            default:
+                print("Not handled");
+                break;
+        }
+
+    }
+
+    //private IEnumerator FlipRoutine()
     //{
-    //    if (newState == currentState)
-    //        return;
-
-    //    currentTween?.Kill();
-
-    //    currentState = newState;
-
-    //    switch (currentState)
+    //    while (true)
     //    {
-    //        case CharacterState.Idle:
-    //            currentTween = PlayIdleAnimation();
-    //            break;
-    //        case CharacterState.Move:
-    //            currentTween = PlayRunAnimation();
-    //            break;
-    //        case CharacterState.Attack:
-    //            //currentTween = PlayAttackAnimation();
-    //            break;
+    //        yield return new WaitForSeconds(directionChangeInterval);
+
+    //        if (UnityEngine.Random.value < flipChance)
+    //        {
+    //            // Yönü tersine çevir
+    //            isLookingRight = !isLookingRight;
+
+    //            float targetYRotation = isLookingRight ? 0f : 180f;
+
+    //            // Dönüþ animasyonu
+    //            charModel.DORotate(new Vector3(0f, targetYRotation, 0f), 0.5f)
+    //                .SetEase(Ease.InOutSine);
+    //        }
     //    }
     //}
 
-    void PlayIdleAnimation()
-    {
-        // Ýstediðimiz baþlangýç z deðerini açýkça koy (ör. From gibi davranmasý için)
-        var e = transform.localEulerAngles;
-        e.z = zFrom;
-        transform.localEulerAngles = e;
+    //public IEnumerator SwordSwing()
+    //{
+    //    yield return new WaitForSeconds(0.1f); // Küçük bir gecikme ekleyelim
+    //                                           // Ýlk açýdan -swingAngle/2'ye, sonra +swingAngle/2'ye ve tekrar baþlangýca dön
+    //    Sequence swingSequence = DOTween.Sequence();
 
-        xTween = DOTween.To(
-            () => NormalizeAngle(transform.localEulerAngles.x),
-            x => { var ev = transform.localEulerAngles; ev.x = x; transform.localEulerAngles = ev; },
-            xTarget,
-            duration
-        ).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
-
-        zTween = DOTween.To(
-            () => NormalizeAngle(transform.localEulerAngles.z),
-            z => { var ev = transform.localEulerAngles; ev.z = z; transform.localEulerAngles = ev; },
-            zTo,
-            duration
-        ).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
-    }
-
-    float NormalizeAngle(float a) => Mathf.Repeat(a + 180f, 360f) - 180f;
-
-    void PlayRunAnimation()
-    {
-
-        // Yukarý zýplama ve geri dönme hareketi, loop ile devam eder
-        charModel.DOLocalMoveY(initialLocalPosition.y + jumpHeight, jumpDuration / 2)
-            .SetLoops(-1, LoopType.Yoyo)
-            .SetEase(Ease.OutQuad);
-
-        //if(UnityEngine.Random.value < flipChance)
-        //{
-        //    transform.DORotate(new Vector3(0f, -180f, 0f), 0.7f)
-        //        .SetLoops(-1, LoopType.Yoyo)
-        //        .SetEase(Ease.InOutSine);
-        //}
-    }
-
-    private IEnumerator FlipRoutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(directionChangeInterval);
-
-            if (UnityEngine.Random.value < flipChance)
-            {
-                // Yönü tersine çevir
-                isLookingRight = !isLookingRight;
-
-                float targetYRotation = isLookingRight ? 0f : 180f;
-
-                // Dönüþ animasyonu
-                charModel.DORotate(new Vector3(0f, targetYRotation, 0f), 0.5f)
-                    .SetEase(Ease.InOutSine);
-            }
-        }
-    }
-
-    public IEnumerator SwordSwing()
-    {
-        yield return new WaitForSeconds(0.1f); // Küçük bir gecikme ekleyelim
-                                               // Ýlk açýdan -swingAngle/2'ye, sonra +swingAngle/2'ye ve tekrar baþlangýca dön
-        Sequence swingSequence = DOTween.Sequence();
-
-        swingSequence.Append(swordModel.transform.DOLocalRotate(new Vector3(0, 0, -swingAngle / 2), swingDuration / 2)
-            .SetEase(Ease.OutQuad));
-        swingSequence.Append(swordModel.transform.DOLocalRotate(new Vector3(0, 0, swingAngle / 2), swingDuration)
-            .SetEase(Ease.InOutQuad));
-        swingSequence.Append(swordModel.transform.DOLocalRotateQuaternion(initialRotation, swingDuration / 2)
-            .SetEase(Ease.InQuad));
-    }
+    //    swingSequence.Append(swordModel.transform.DOLocalRotate(new Vector3(0, 0, -swingAngle / 2), swingDuration / 2)
+    //        .SetEase(Ease.OutQuad));
+    //    swingSequence.Append(swordModel.transform.DOLocalRotate(new Vector3(0, 0, swingAngle / 2), swingDuration)
+    //        .SetEase(Ease.InOutQuad));
+    //    swingSequence.Append(swordModel.transform.DOLocalRotateQuaternion(initialRotation, swingDuration / 2)
+    //        .SetEase(Ease.InQuad));
+    //}
 }

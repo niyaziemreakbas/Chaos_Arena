@@ -13,6 +13,7 @@ public class CharMovementController : MonoBehaviour
     private CharState currentState;
 
     private CharAttackController attackController;
+    private AnimationController animationController;
 
     public void Initialize(Character character, Owner teamOwner, Owner enemyOwner)
     {
@@ -21,6 +22,7 @@ public class CharMovementController : MonoBehaviour
         this.enemyOwner = enemyOwner;
 
         attackController = GetComponent<CharAttackController>();
+        animationController = character.CharModel.GetComponent<AnimationController>();
         if (attackController != null)
             attackController.Initialize(character, character.CharacterData.attackCooldown);
     }
@@ -32,9 +34,11 @@ public class CharMovementController : MonoBehaviour
         switch (currentState)
         {
             case CharState.Idle:
+                //animationController.ChangeState(AnimationController.CharacterState.Idle);
                 HandleIdle();
                 break;
             case CharState.Chasing:
+                //animationController.ChangeState(AnimationController.CharacterState.Move);
                 HandleChasing();
                 break;
             case CharState.Attacking:
