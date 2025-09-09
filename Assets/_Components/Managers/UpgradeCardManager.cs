@@ -204,7 +204,7 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
     {
         var mgr = owner.UnitRegistry;
         
-        foreach (var unit in mgr.CharacterOrder)
+        foreach (var unit in mgr.SpawnedCharData)
         {
             if (charData.charName == unit.charName)
             {
@@ -217,37 +217,31 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
     // Checks if there is at least one character with the same name in the selected characters
     private bool CheckDoubleValidity(CharacterData charData, Owner owner)
     {
+        var mgr = owner.UnitRegistry;
+
         if (!CheckCharExistence(charData, owner))
         {
             return false; // Character cant be doubled
         }
 
+        if (!mgr.HasUnitGroup(charData.charName))
+        {
+            Debug.LogWarning($"No UnitGroups for: {charData.charName}");
+            return false;
+        }
 
-        owner.UnitRegistry.UnitGroups.TryGetValue(charData.charName, out List<GameObject> value);
-        int charCount = value.Count;
-        print("Char Count from Owner : " + owner.OwnerName + " " + charCount);
-        if (charCount < 25)
+        var unitGroup = mgr.ReturnUnitGroup(charData.charName);
+
+        if (unitGroup.unitList == null)
+        {
+            Debug.LogWarning($"No units in unit group for: {charData.charName}");
+            return false;
+        }
+
+        if (unitGroup.unitList.Count < 25)
         {
             return true; // Character can be doubled
         }
-
-        //if (owner == null)
-        //{
-        //    Debug.LogError("Owner is NULL in CheckDoubleValidity!");
-        //}
-        //else if (owner.UnitRegistry == null)
-        //{
-        //    Debug.LogError($"UnitRegistry is NULL for owner {owner.OwnerName}");
-        //}
-        //else if (owner.UnitRegistry.UnitGroups == null)
-        //{
-        //    Debug.LogError($"UnitGroups dictionary is NULL for owner {owner.OwnerName}");
-        //}
-        //else
-        //{
-        //    Debug.Log($"Checking UnitGroups for {charData.charName}, UnitGroups count: {owner.UnitRegistry.UnitGroups.Count}");
-        //}
-
         return false;
     }
 
@@ -256,27 +250,45 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
     {
         var mgr = owner.UnitRegistry;
 
-        if (!mgr.UnitGroups.TryGetValue(charData.charName, out var units))
+        if (!mgr.HasUnitGroup(charData.charName))
         {
-            Debug.LogWarning($"No units found for character: {charData.charName}");
+            Debug.LogWarning($"No UnitGroups for: {charData.charName}");
             return false;
         }
 
+        var unitGroup = mgr.ReturnUnitGroup(charData.charName);
 
-        CharacterSpawner.Instance.SpawnCharacter(charData, units.Count, owner);
+        if (unitGroup.unitList == null)
+        {
+            Debug.LogWarning($"No units in unit group for: {charData.charName}");
+            return false;
+        }
+
+        CharacterSpawner.Instance.SpawnCharacter(charData, unitGroup.unitList.Count, owner);
         return true;
     }
+
 
     public bool LevelUpCharsByName(CharacterData charData, Owner owner)
     {
         var mgr = owner.UnitRegistry;
         string charName = charData.charName;
 
-        if (!mgr.UnitGroups.TryGetValue(charName, out var units))
+        if (!mgr.HasUnitGroup(charName))
         {
             Debug.LogWarning($"No units found for character: {charName}");
             return false;
         }
+
+        var unitGroup = mgr.ReturnUnitGroup(charData.charName);
+
+        if (unitGroup.unitList == null)
+        {
+            Debug.LogWarning($"No units in unit group for: {charData.charName}");
+            return false;
+        }
+
+        List<GameObject> units = unitGroup.unitList;
 
         foreach (var unit in units)
         {

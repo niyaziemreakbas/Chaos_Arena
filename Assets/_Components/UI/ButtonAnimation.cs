@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIAnimation : MonoBehaviour
+public class ButtonAnimation : MonoBehaviour
 {
     [SerializeField] private float pulseScale = 1.2f; // Ne kadar büyüyecek
     [SerializeField] private float duration = 0.5f;   // Animasyon süresi

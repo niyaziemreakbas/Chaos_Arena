@@ -16,7 +16,7 @@ public class CardData
 
     public float movementSpeed;
 
-    //public int attackSpeed;
+    public int maxUnitsPerRow;
 
     public int spawnCount;
 
@@ -51,6 +51,7 @@ public class CardData
         cardColor = cardSO.cardColor;
         charPrefab = cardSO.charPrefab;
         attackCooldown = cardSO.attackCooldown;
+        maxUnitsPerRow = cardSO.maxUnitsPerRow;
 
         healthExpr = Expression.Parse(cardSO.healthFormula);
         damageExpr = Expression.Parse(cardSO.damageFormula);

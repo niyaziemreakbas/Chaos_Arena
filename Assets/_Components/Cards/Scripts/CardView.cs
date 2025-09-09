@@ -227,9 +227,8 @@ public class CardView : MonoBehaviour
         yield return GetComponent<RectTransform>()
             .DOAnchorPos(Vector2.zero, 0.5f)
             .WaitForCompletion();
+
     }
-
-
 
     public void SetEquiped()
     {

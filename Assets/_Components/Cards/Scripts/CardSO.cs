@@ -30,6 +30,8 @@ public class CardSO : ScriptableObject
 
     public GameObject charPrefab;
 
+    public int maxUnitsPerRow = 6;
+
     [Header("Upgrade Formulas")]
     public string healthFormula = "baseHealth + level * 20";
 

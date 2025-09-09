@@ -66,13 +66,15 @@ public class CardPanelManager : SingletonMonoBehaviour<CardPanelManager>
             FadePanel.SetActive(false);
             EmptySpaceClick.transform.SetAsFirstSibling();
             print("Upgrade frame clicked, closing it now.");
-            UpgradePopUpFrame.SetActive(false);
+            upgradeFrameView.PlayOutro();
+
+            //UpgradePopUpFrame.SetActive(false);
             ChangeState(CardState.Idle);
             return;
         }
-
+        upgradeFrameView.PlayOutro();
         print("Empty space clicked");
-        UpgradePopUpFrame.SetActive(false);
+        //UpgradePopUpFrame.SetActive(false);
         ChangeState(CardState.Idle);
         if (equipedCard != null)
         {

@@ -25,6 +25,8 @@ public class CharacterData
 
     public float attackCooldown;
 
+    public int maxUnitsPerRow;
+
     public GameObject charPrefab;
 
     // Save for upcoming LevelDataSO
@@ -60,7 +62,7 @@ public class CharacterData
         charColor = cardData.cardColor;
         charPrefab = cardData.charPrefab;
         attackCooldown = cardData.attackCooldown;
-
+        maxUnitsPerRow = cardData.maxUnitsPerRow;
         charLevel = 1;
 
         // baz deðerleri sakla
@@ -88,6 +90,7 @@ public class CharacterData
         spawnCount = other.spawnCount;
         attackCooldown = other.attackCooldown;
         charPrefab = other.charPrefab;
+        maxUnitsPerRow = other.maxUnitsPerRow;
     }
 
 

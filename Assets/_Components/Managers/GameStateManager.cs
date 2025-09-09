@@ -45,6 +45,7 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
     private void Update()
     {
         upgradeCount.text = $"Turn : {currentUpgradeCount}/{maxUpgradeCount}";
+       // print(currentState + " is the current state");
     }
 
     private void HandleFightStateEnd()
@@ -65,7 +66,6 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
         print("The game resetted now deciding to state bonus or upgrade");
         if (owners.Exists(o => o.IsLosedLastFight))
         {
-            print("Decided to bonus");
             ChangeState(GameState.Idle);
             StartCoroutine(HandleBonusState());
         }

@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 7303382996884928755}
   - component: {fileID: 7743121813830115821}
   - component: {fileID: 2167078927063624824}
+  - component: {fileID: 4289592039507437380}
   m_Layer: 0
   m_Name: UpgradeCard
   m_TagString: Untagged
@@ -149,6 +150,18 @@ MonoBehaviour:
   doubleImage: {fileID: 6352073990252385588}
   upgradeImage: {fileID: 1091044417682462838}
   upgradeType: {fileID: 6665093383503667489}
+--- !u!225 &4289592039507437380
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7303382996884928756}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &7303382996910564982
 GameObject:
   m_ObjectHideFlags: 0

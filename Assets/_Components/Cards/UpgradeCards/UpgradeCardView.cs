@@ -81,8 +81,11 @@ public class UpgradeCardView : MonoBehaviour
                 break;
         }
 
+        //UIAnimator.PlayIntro(GetComponent<RectTransform>(), 0.6f);
         //GetComponent<Image>().color = upgradeCard.charData.charColor;
     }
+
+
 
     //private void ActivateStars()
     //{
