@@ -246,6 +246,7 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
             int row = i / (int)maxPerRow;       // Hangi satır
             int col = i % (int)maxPerRow;       // Hangi sütun
 
+            // Centering lines
             int unitsInThisRow = Mathf.Min((int)maxPerRow, units.Count - row * (int)maxPerRow);
             float rowWidth = (unitsInThisRow - 1) * spacingX;
 
@@ -258,7 +259,7 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
             units[i].transform.position = newPos;
         }
 
-        unitGroup.rowCount = totalRows;
+        //unitGroup.rowCount = totalRows;
     }
 
 

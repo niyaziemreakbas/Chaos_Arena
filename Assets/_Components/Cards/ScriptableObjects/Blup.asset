@@ -19,12 +19,12 @@ MonoBehaviour:
   movementSpeed: 1
   attackSpeed: 5
   priorityLevel: 3
-  spawnCount: 3
+  spawnCount: 6
   attackCooldown: 1
   cardImage: {fileID: 21300000, guid: 644e6c65912ffb7479ba28f483051df9, type: 3}
   cardColor: {r: 0.6320754, g: 1, b: 0.6353718, a: 0.47058824}
   charPrefab: {fileID: 6743873009203857186, guid: adab78f5a28b06a46b04124e05dd1d2b, type: 3}
-  maxUnitsPerRow: 12
+  maxUnitsPerRow: 8
   healthFormula: baseHealth + level * 20
   damageFormula: baseDamage + level * 5
   goldCostFormula: 1.2 * level + 25
