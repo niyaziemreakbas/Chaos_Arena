@@ -1,0 +1,1 @@
+In this strategy game, you draft cards each round to build your army. You'll choose whether to upgrade your characters, double your units on the field, or spawn new ones. After you pick your cards, the armies fight each other automatically. If you lose a round, you get a bonus card to help you catch up
