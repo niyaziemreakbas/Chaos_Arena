@@ -8,10 +8,6 @@ public class UnitGroup : MonoBehaviour
 
     public int priorityLevel;
 
-    //public float rowCount;
-
-//    public int charCount;
-
     public CharacterData characterData;
 
     public List<GameObject> unitList = new List<GameObject>();
@@ -26,12 +22,5 @@ public class UnitGroup : MonoBehaviour
     public void AddUnit(GameObject unit)
     {
         unitList.Add(unit);
-        //  charCount++;
     }
-
-    public void RepositionGroup()
-    {
-
-    }
-
 }

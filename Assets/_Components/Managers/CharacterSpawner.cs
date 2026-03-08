@@ -9,9 +9,9 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
 {
     [Header("Reposition Settings")]
     private float spacingX = 0.5f;
-    private float inGroupSpacingY = 0.8f;
+    private float inGroupSpacingY = 0.7f;
 
-    private float bwGroupSpacingY = 1.5f;
+    private float bwGroupSpacingY = 1f;
 
     private void OnEnable()
     {
@@ -73,158 +73,23 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
         RepositionGroups(owner);
     }
 
-    //public void RepositionCharacters(Owner owner)
-    //{
-    //    var mgr = owner.UnitRegistry;
-
-    //    foreach (var kvp in mgr.UnitGroups)
-    //    {
-    //        string key = kvp.Key;
-    //        List<GameObject> group = kvp.Value;
-
-    //        int groupYIndex = mgr.CharacterOrder.FindIndex(c => c.charName == key);
-    //        int totalGroups = mgr.CharacterOrder.Count;
-
-    //        // baseY hesaplama: 
-    //        // Birbirlerine bakmaları için
-    //        // isUpward true ise priority en düşük en üstte
-    //        // isUpward false ise priority en düşük en altta
-    //        float baseY;
-    //        if (owner.IsUpward)
-    //        {
-    //            int invertedIndex = totalGroups - 1 - groupYIndex;
-    //            baseY = owner.spawnOrigin.position.y + invertedIndex * spacingY;
-    //        }
-    //        else
-    //        {
-    //            baseY = owner.spawnOrigin.position.y + groupYIndex * spacingY;
-    //        }
-
-    //        int totalUnits = group.Count;
-    //        int rows = Mathf.CeilToInt((float)totalUnits / maxUnitsPerRow);
-
-    //        for (int row = 0; row < rows; row++)
-    //        {
-    //            int unitsInRow = Mathf.Min(maxUnitsPerRow, totalUnits - row * maxUnitsPerRow);
-
-    //            // Satırdaki birimleri yatayda ortalamak için başlangıç X
-    //            float rowWidth = (unitsInRow - 1) * spacingX;
-    //            float startX = owner.spawnOrigin.position.x - rowWidth / 2f;
-
-    //            for (int i = 0; i < unitsInRow; i++)
-    //            {
-    //                int index = row * maxUnitsPerRow + i;
-    //                if (index >= totalUnits)
-    //                    break;
-
-    //                float xPos = startX + i * spacingX;
-
-    //                float yPos;
-    //                // isUpward true ise yukarıdan aşağı satırlar artacak (yani negatif yönde)
-    //                if (owner.IsUpward)
-    //                {
-    //                    yPos = baseY - row * spacingY;
-    //                }
-    //                else
-    //                {
-    //                    // isUpward false ise aşağıdan yukarı satırlar artacak (pozitif yönde)
-    //                    yPos = baseY + row * spacingY;
-    //                }
-
-    //                group[index].transform.position = new Vector3(xPos, yPos, 0);
-    //            }
-    //        }
-    //    }
-
-    //    ResetChars(owner);
-    //}
-
-    //public void RepositionCharacters(Owner owner)
-    //{
-    //    var mgr = owner.UnitRegistry;
-
-    //    foreach (var kvp in mgr.UnitGroups)
-    //    {
-    //        string key = kvp.Key;
-    //        List<GameObject> group = kvp.Value;
-
-    //        int groupYIndex = mgr.CharacterOrder.FindIndex(c => c.charName == key);
-    //        int totalGroups = mgr.CharacterOrder.Count;
-
-    //        float baseY;
-    //        if (owner.IsUpward)
-    //        {
-    //            int invertedIndex = totalGroups - 1 - groupYIndex;
-    //            baseY = owner.spawnOrigin.position.y + invertedIndex * spacingY;
-    //        }
-    //        else
-    //        {
-    //            baseY = owner.spawnOrigin.position.y + groupYIndex * spacingY;
-    //        }
-
-    //        int totalUnits = group.Count;
-    //        int rows = Mathf.CeilToInt((float)totalUnits / maxUnitsPerRow);
-
-    //        for (int row = 0; row < rows; row++)
-    //        {
-    //            int unitsInRow = Mathf.Min(maxUnitsPerRow, totalUnits - row * maxUnitsPerRow);
-
-    //            float rowWidth = (unitsInRow - 1) * spacingX;
-    //            float startX = owner.spawnOrigin.position.x - rowWidth / 2f;
-
-    //            for (int i = 0; i < unitsInRow; i++)
-    //            {
-    //                int index = row * maxUnitsPerRow + i;
-    //                if (index >= totalUnits)
-    //                    break;
-
-    //                float xPos = startX + i * spacingX;
-    //                float yPos = owner.IsUpward
-    //                    ? baseY - row * spacingY
-    //                    : baseY + row * spacingY;
-
-    //                var obj = group[index];
-    //                obj.transform.position = new Vector3(xPos, yPos, 0);
-
-    //                // GridPos'u Character component'te tut
-    //                var character = obj.GetComponent<Character>();
-    //                if (character != null)
-    //                {
-    //                    character.GridPos = new Vector2Int(i, row);
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    ResetChars(owner);
-    //}
-
     public void RepositionGroups(Owner owner)
     {
         var mgr = owner.UnitRegistry;
 
         Vector3 baseTransform = owner.spawnOrigin.transform.position;
 
-        if (owner.IsUpward)
-        {
-            // Bigger to smaller
-            mgr.UnitGroups.Sort((a, b) => b.priorityLevel.CompareTo(a.priorityLevel));
-        }
-        else
-        {
-            // Smaller to bigger
-            mgr.UnitGroups.Sort((a, b) => a.priorityLevel.CompareTo(b.priorityLevel));
-        }
-
+        mgr.UnitGroups.Sort((a, b) => b.priorityLevel.CompareTo(a.priorityLevel));
 
         foreach (var UnitGroup in mgr.UnitGroups)
         {
-            int rowCount = RepositionCharacters(UnitGroup, baseTransform);
+            int rowCount = RepositionCharacters(UnitGroup, baseTransform, owner);
 
-            // Calculate LimitY according to space between groups and rows 
+            float direction = owner.IsUpward ? 1f : -1f;
+
             baseTransform = new Vector3(
                 baseTransform.x,
-                baseTransform.y + ((rowCount - 1) * inGroupSpacingY) + bwGroupSpacingY,
+                baseTransform.y + direction * (((rowCount - 1) * inGroupSpacingY) + bwGroupSpacingY),
                 baseTransform.z
             );
         }
@@ -232,26 +97,33 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
         ResetChars(owner);
     }
 
-    public int RepositionCharacters(UnitGroup unitGroup, Vector3 baseTransform)
+    public int RepositionCharacters(UnitGroup unitGroup, Vector3 baseTransform, Owner owner)
     {
         List<GameObject> units = unitGroup.unitList;
-        float maxPerRow = unitGroup.characterData.maxUnitsPerRow;
+        int maxPerRow = unitGroup.characterData.maxUnitsPerRow;
 
         int rowCount = Mathf.CeilToInt((float)units.Count / maxPerRow);
 
+        float direction = owner.IsUpward ? 1f : -1f;
+
+        Vector3 startPos = new Vector3(
+            baseTransform.x,
+            baseTransform.y + direction * (rowCount - 1) * inGroupSpacingY,
+            baseTransform.z
+        );
+
         for (int i = 0; i < units.Count; i++)
         {
-            int row = i / (int)maxPerRow;       // Hangi satır
-            int col = i % (int)maxPerRow;       // Hangi sütun
+            int row = i / maxPerRow;
+            int col = i % maxPerRow;
 
-            // Centering lines
-            int unitsInThisRow = Mathf.Min((int)maxPerRow, units.Count - row * (int)maxPerRow);
+            int unitsInThisRow = Mathf.Min(maxPerRow, units.Count - row * maxPerRow);
             float rowWidth = (unitsInThisRow - 1) * spacingX;
 
             Vector3 newPos = new Vector3(
-                baseTransform.x - rowWidth / 2 + col * spacingX,  // merkezleme
-                baseTransform.y - row * inGroupSpacingY,                // alt satır için Y ekseni
-                baseTransform.z
+                startPos.x - rowWidth / 2 + col * spacingX,
+                startPos.y - direction * row * inGroupSpacingY,
+                startPos.z
             );
 
             units[i].transform.position = newPos;
@@ -259,7 +131,6 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
 
         return rowCount;
     }
-
 
     private void ResetChars(Owner owner)
     {
