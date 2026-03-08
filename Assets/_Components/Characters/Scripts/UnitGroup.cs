@@ -8,9 +8,9 @@ public class UnitGroup : MonoBehaviour
 
     public int priorityLevel;
 
-    public float rowCount;
+    //public float rowCount;
 
-    public int chartCount;
+//    public int charCount;
 
     public CharacterData characterData;
 
@@ -26,8 +26,7 @@ public class UnitGroup : MonoBehaviour
     public void AddUnit(GameObject unit)
     {
         unitList.Add(unit);
-        chartCount++;
-        rowCount = characterData.spawnCount / characterData.maxUnitsPerRow;
+        //  charCount++;
     }
 
     public void RepositionGroup()

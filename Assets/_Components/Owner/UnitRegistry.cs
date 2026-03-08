@@ -42,7 +42,7 @@ public class UnitRegistry
     }
 
     // Dictinoary to hold parent transforms for each character name, used for organizing units in the hierarchy
-    public Dictionary<string, Transform> UnitParents { get; private set; } = new Dictionary<string, Transform>();
+    public Dictionary<string, Transform> UnitGroupParents { get; private set; } = new Dictionary<string, Transform>();
 
     // List to hold all spawned character gameObjects, used for detecting targets by enemies.
     public List<GameObject> SpawnedCharacters { get; private set; } = new List<GameObject>();

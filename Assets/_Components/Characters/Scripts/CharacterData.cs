@@ -92,6 +92,4 @@ public class CharacterData
         charPrefab = other.charPrefab;
         maxUnitsPerRow = other.maxUnitsPerRow;
     }
-
-
 }

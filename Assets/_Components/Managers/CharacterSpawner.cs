@@ -9,10 +9,9 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
 {
     [Header("Reposition Settings")]
     private float spacingX = 0.5f;
-    private float spacingY = 0.8f;
+    private float inGroupSpacingY = 0.8f;
 
-    //private float groupSpacingX = 1f;
-    private float groupSpacingY = 1.5f;
+    private float bwGroupSpacingY = 1.5f;
 
     private void OnEnable()
     {
@@ -40,11 +39,11 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
             mgr.AddUnitGroup(new UnitGroup(key, data.priorityLevel, data));
 
         // Parent kontrolü ve oluşturma
-        if (!mgr.UnitParents.ContainsKey(key))
+        if (!mgr.UnitGroupParents.ContainsKey(key))
         {
             GameObject parentObj = new GameObject(key + "Group");
             parentObj.transform.parent = owner.charsRoot; // istersen sahne kökü yapabilirsin
-            mgr.UnitParents[key] = parentObj.transform;
+            mgr.UnitGroupParents[key] = parentObj.transform;
         }
 
         // Karakterleri oluştur
@@ -62,7 +61,7 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
             obj.tag = owner.OwnerName;
 
             // Parent’a ata
-            obj.transform.parent = mgr.UnitParents[key];
+            obj.transform.parent = mgr.UnitGroupParents[key];
 
             // Oluşturulan birimi gruba ekle
             mgr.ReturnUnitGroup(key).AddUnit(obj);
@@ -220,12 +219,12 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
 
         foreach (var UnitGroup in mgr.UnitGroups)
         {
-            RepositionCharacters(UnitGroup, baseTransform);
+            int rowCount = RepositionCharacters(UnitGroup, baseTransform);
 
             // Calculate LimitY according to space between groups and rows 
             baseTransform = new Vector3(
                 baseTransform.x,
-                baseTransform.y + (UnitGroup.rowCount - 1) * spacingY + groupSpacingY,
+                baseTransform.y + ((rowCount - 1) * inGroupSpacingY) + bwGroupSpacingY,
                 baseTransform.z
             );
         }
@@ -233,13 +232,12 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
         ResetChars(owner);
     }
 
-    public void RepositionCharacters(UnitGroup unitGroup, Vector3 baseTransform)
+    public int RepositionCharacters(UnitGroup unitGroup, Vector3 baseTransform)
     {
         List<GameObject> units = unitGroup.unitList;
-        CharacterData data = unitGroup.characterData;
-        float maxPerRow = data.maxUnitsPerRow;
+        float maxPerRow = unitGroup.characterData.maxUnitsPerRow;
 
-        Vector3 startPos = baseTransform;
+        int rowCount = Mathf.CeilToInt((float)units.Count / maxPerRow);
 
         for (int i = 0; i < units.Count; i++)
         {
@@ -251,15 +249,15 @@ public class CharacterSpawner : SingletonMonoBehaviour<CharacterSpawner>
             float rowWidth = (unitsInThisRow - 1) * spacingX;
 
             Vector3 newPos = new Vector3(
-                startPos.x - rowWidth / 2 + col * spacingX,  // merkezleme
-                startPos.y - row * spacingY,                // alt satır için Y ekseni
-                startPos.z
+                baseTransform.x - rowWidth / 2 + col * spacingX,  // merkezleme
+                baseTransform.y - row * inGroupSpacingY,                // alt satır için Y ekseni
+                baseTransform.z
             );
 
             units[i].transform.position = newPos;
         }
 
-        //unitGroup.rowCount = totalRows;
+        return rowCount;
     }
 
 

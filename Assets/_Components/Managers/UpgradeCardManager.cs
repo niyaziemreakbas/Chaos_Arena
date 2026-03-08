@@ -245,7 +245,6 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
         return false;
     }
 
-
     private bool DoubleChar(CharacterData charData, Owner owner)
     {
         var mgr = owner.UnitRegistry;
@@ -267,7 +266,6 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
         CharacterSpawner.Instance.SpawnCharacter(charData, unitGroup.unitList.Count, owner);
         return true;
     }
-
 
     public bool LevelUpCharsByName(CharacterData charData, Owner owner)
     {
