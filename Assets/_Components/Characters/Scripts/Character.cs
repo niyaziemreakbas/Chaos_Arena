@@ -145,5 +145,8 @@ public class Character : MonoBehaviour, IDamageable
     public void ResetChar()
     {
         currentHealth = maxHealth;
+
+        //if(!gameObject.activeInHierarchy)
+        //    gameObject.SetActive(true);
     }
 }

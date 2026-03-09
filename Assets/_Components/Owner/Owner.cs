@@ -121,7 +121,7 @@ public abstract class Owner : MonoBehaviour
     {
         UpgradeCount = 0;
 
-        CharacterSpawner.Instance.RepositionGroups(this);
+        FormationManager.Reposition(this);
         CharacterSpawner.Instance.ActivateAllIfInactive(unitRegistry.SpawnedCharacters);
     }
 
