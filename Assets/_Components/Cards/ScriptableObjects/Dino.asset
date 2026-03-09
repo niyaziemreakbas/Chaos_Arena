@@ -19,7 +19,7 @@ MonoBehaviour:
   movementSpeed: 1.2
   attackSpeed: 5
   priorityLevel: 1
-  spawnCount: 6
+  spawnCount: 2
   attackCooldown: 2
   cardImage: {fileID: 21300000, guid: 1cf9f1aab5bf30b43bf1eac520a1fa3b, type: 3}
   cardColor: {r: 1, g: 0.4459961, b: 0, a: 0.47058824}

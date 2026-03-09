@@ -1,105 +1,115 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.EventSystems;
+using System;
 
-public class UpgradeCardView : MonoBehaviour
+public class UpgradeCardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    private UpgradeCardData upgradeCard;
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI charNameText;
+    [SerializeField] private Image charImage;
+    [SerializeField] private Image backGroundColor;
+    [SerializeField] private Image doubleImage;
+    [SerializeField] private Image upgradeImage;
+    [SerializeField] private TextMeshProUGUI upgradeTypeText;
 
-    [SerializeField] TextMeshProUGUI charName;
+    [Header("Animation Settings")]
+    private RectTransform rectTransform;
+    private CanvasGroup canvasGroup;
+    [SerializeField] private float animDelay = 0f;
+    [SerializeField] private float hoverScaleMultiplier = 1.05f;
+    [SerializeField] private float animDuration = 0.5f;
 
-    [SerializeField] Image charImage;
+    private Vector2 originalPos;
+    private Vector3 originalScale;
 
-    [SerializeField] Image backGroundColor;
+    public Action OnViewClicked;
 
-    [SerializeField] Image doubleImage;
-
-    [SerializeField] Image upgradeImage;
-
-    [SerializeField] TextMeshProUGUI upgradeType;
-
-   // [SerializeField] GameObject starContainer;
-
-    public void SetUpgradeCard(UpgradeCardData upgradeCard)
+    private void Awake()
     {
-        this.upgradeCard = upgradeCard;
-        UpdateUpgradeUI();
+        canvasGroup = GetComponent<CanvasGroup>();
+        rectTransform = GetComponent<RectTransform>();
+
+        originalPos = rectTransform.anchoredPosition;
+        originalScale = rectTransform.localScale;
     }
 
-    private void UpdateUpgradeUI()
+    private void OnEnable()
     {
-        if (upgradeCard == null)
-        {
-            Debug.LogWarning("UpgradeCard is not set.");
-            return;
-        }
-
-        charName.text = upgradeCard.charName;
-        charImage.sprite = upgradeCard.charImage;
-
-        switch (upgradeCard.upgradeType)
-        {
-            case UpgradeType.Doubler:
-                doubleImage.gameObject.SetActive(true);
-                upgradeImage.gameObject.SetActive(false);
-                upgradeType.text = $"x2 {upgradeCard.charData.charName}";
-               // ActivateStars();
-                break;
-            case UpgradeType.Upgrader:
-                doubleImage.gameObject.SetActive(false);
-                upgradeImage.gameObject.SetActive(true);
-                upgradeType.text = $"Upgrade";
-              //  ActivateStars();
-                break;
-            case UpgradeType.Spawner:
-                doubleImage.gameObject.SetActive(false);
-                upgradeImage.gameObject.SetActive(false);
-                upgradeType.text = $"+{upgradeCard.charData.spawnCount.ToString()} {upgradeCard.charData.charName}";
-                //DeactivateStars();
-                break;
-
-            default:
-                Debug.Log("Unknown upgrade type: ");
-                break;
-        }
-
-        switch (upgradeCard.charData.charName)
-        {
-            //Green
-            case "Blup":
-                backGroundColor.color = new Color(0.5647f, 0.6392f, 0.7294f);
-                break;
-            //Orange
-            case "Dino":
-                backGroundColor.color = new Color(1.0f, 0.9608f, 0.1333f);
-                break;
-            //Red
-            case "Demon":
-                backGroundColor.color = new Color(0.0235f, 0.6745f, 0.9961f);
-                break;
-        }
-
-        //UIAnimator.PlayIntro(GetComponent<RectTransform>(), 0.6f);
-        //GetComponent<Image>().color = upgradeCard.charData.charColor;
+        AnimateIn();
     }
 
+    private void OnDisable()
+    {
+        // Prevent DOTween memory leaks
+        rectTransform.DOKill();
+        canvasGroup.DOKill();
+    }
 
+    public void AnimateIn()
+    {
+        rectTransform.DOKill();
+        canvasGroup.DOKill();
 
-    //private void ActivateStars()
-    //{
-    //    foreach (Transform star in starContainer.transform)
-    //    {
-    //        star.gameObject.SetActive(true);
-    //    }
-    //}
-    //private void DeactivateStars()
-    //{
-    //    foreach (Transform star in starContainer.transform)
-    //    {
-    //        star.gameObject.SetActive(false);
-    //    }
-    //}
+        rectTransform.anchoredPosition = new Vector2(originalPos.x, originalPos.y - 500f);
+        canvasGroup.alpha = 0;
 
+        Sequence seq = DOTween.Sequence();
+        seq.Append(rectTransform.DOAnchorPos(originalPos, animDuration).SetEase(Ease.OutBack));
+        seq.Join(canvasGroup.DOFade(1f, 0.3f));
+        seq.SetDelay(animDelay);
+    }
+
+    public void AnimateOut()
+    {
+        rectTransform.DOKill();
+        canvasGroup.DOKill();
+
+        Sequence seq = DOTween.Sequence();
+        seq.Append(rectTransform.DOAnchorPos(new Vector2(originalPos.x, originalPos.y - 500f), animDuration).SetEase(Ease.InBack));
+        seq.Join(canvasGroup.DOFade(0f, 0.3f));
+        seq.OnComplete(() => gameObject.SetActive(false));
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        rectTransform.DOKill();
+        rectTransform.DOScale(originalScale * hoverScaleMultiplier, 0.2f).SetEase(Ease.OutQuad);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        rectTransform.DOKill();
+        rectTransform.DOScale(originalScale, 0.2f).SetEase(Ease.OutQuad);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // Notify subscribers (the Controller)
+        OnViewClicked?.Invoke();
+    }
+
+    public void SetCharacterInfo(string name, Sprite image)
+    {
+        charNameText.text = name;
+        charImage.sprite = image;
+    }
+
+    public void SetBackgroundColor(Color color)
+    {
+        backGroundColor.color = color;
+    }
+
+    public void SetUpgradeIcons(bool showDouble, bool showUpgrade)
+    {
+        doubleImage.gameObject.SetActive(showDouble);
+        upgradeImage.gameObject.SetActive(showUpgrade);
+    }
+
+    public void SetUpgradeText(string text)
+    {
+        upgradeTypeText.text = text;
+    }
 }

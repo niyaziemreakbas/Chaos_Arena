@@ -182,7 +182,7 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
             {
                 bonusPlayedFlag = false;
 
-                owner.OnBonusPlayed += HandleBonusPlayed; // evente abone ol
+                owner.OnBonusPlayed += HandleBonusPlayed; 
 
                 owner.HandleState(GameState.Upgrade);
 

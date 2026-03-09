@@ -7,15 +7,17 @@ public class PlayerOwner : Owner
 {
     public static event Action OnUpgradeViewHandle;
     public static event Action OnFightViewHandle;
+    public static event Action OnCardSelectionHandle;
+
 
     private void OnEnable()
     {
-        UpgradeCard.OnUpgradeCardClicked += UpgradeCardClicked;
+        UpgradeCardController.OnCardSelected += UpgradeCardClicked;
     }
 
     private void OnDisable()
     {
-        UpgradeCard.OnUpgradeCardClicked -= UpgradeCardClicked;
+        UpgradeCardController.OnCardSelected -= UpgradeCardClicked;
     }
 
     private void Start()
@@ -48,6 +50,8 @@ public class PlayerOwner : Owner
             if(UpgradeCardManager.Instance.HandleCardUpgrades(upgradeCardData, this))
             {
                 OnUpgradePerformedFunction();
+
+                OnCardSelectionHandle?.Invoke();
             }
         }
     }

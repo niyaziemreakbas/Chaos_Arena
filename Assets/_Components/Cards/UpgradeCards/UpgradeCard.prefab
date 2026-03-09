@@ -84,7 +84,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7303382996884928755}
-  - component: {fileID: 7743121813830115821}
   - component: {fileID: 2167078927063624824}
   - component: {fileID: 4289592039507437380}
   m_Layer: 0
@@ -120,18 +119,6 @@ RectTransform:
   m_AnchoredPosition: {x: -490.2147, y: -908.151}
   m_SizeDelta: {x: 320, y: 420}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7743121813830115821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7303382996884928756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eabc098fff5f5ea458556eb07e3feb43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2167078927063624824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,12 +131,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c6bcb8a54950544a8ab2d599e50fd38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  charName: {fileID: 7303382998879332774}
+  charNameText: {fileID: 7303382998879332774}
   charImage: {fileID: 7303382997400602811}
   backGroundColor: {fileID: 7303382996910564979}
   doubleImage: {fileID: 6352073990252385588}
   upgradeImage: {fileID: 1091044417682462838}
-  upgradeType: {fileID: 6665093383503667489}
+  upgradeTypeText: {fileID: 6665093383503667489}
+  animDelay: 0
+  hoverScaleMultiplier: 1.05
+  animDuration: 0.5
 --- !u!225 &4289592039507437380
 CanvasGroup:
   m_ObjectHideFlags: 0
