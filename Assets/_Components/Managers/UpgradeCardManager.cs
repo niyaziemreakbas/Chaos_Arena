@@ -40,6 +40,8 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
 
         int chosenCharIndex = UnityEngine.Random.Range(0, mgr.SelectedCharacters.Count);
 
+        print("Selected chars count: " + owner.UnitRegistry.SelectedCharacters.Count);
+
         return mgr.SelectedCharacters[chosenCharIndex];
     }
 
@@ -47,40 +49,26 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
     public UpgradeType SelectRandomUpgradeType(CharacterData charData, Owner owner)
     {
         List<UpgradeType> upgradeTypes = new();
-        print($"Randomly Choosing for {owner.OwnerName} Upgrade Count : {owner.UpgradeCount}");
 
-        //if(CheckUpgradeValidity(charData, owner))
-        //{
-        //    Debug.Log("Be careful Upgrade is not valid");
-        //}
-
-        //if (CheckDoubleValidity(charData, owner))
-        //{
-        //    Debug.Log("Be careful Double is not valid");
-        //}
-
-        if (CheckDoubleValidity(charData, owner) && owner.UpgradeCount == 2)
+        if (CheckDoubleValidity(charData, owner))
         {
-            print("Double upgrade is available for selection." + owner.OwnerName + "UpgradeCount : " + owner.UpgradeCount);
             upgradeTypes.Add(UpgradeType.Doubler);
-            print(upgradeTypes.Count + "double added");
+            print("double added");
         }
 
-        if (CheckUpgradeValidity(charData, owner) && owner.UpgradeCount == 2)
+        if (CheckUpgradeValidity(charData, owner))
         {
-            print("Upgrade is available for selection." + owner.OwnerName + "UpgradeCount : " + owner.UpgradeCount);
             upgradeTypes.Add(UpgradeType.Upgrader);
-            print(upgradeTypes.Count + "upgrade added");
+            print("upgrade added");
         }
 
-        if (owner.UpgradeCount < 2 || upgradeTypes.Count == 0)
+        if (upgradeTypes.Count == 0)
         {
             print("Spawner upgrade is available for selection, because owner has less than 2 upgrades." + owner.OwnerName);
             upgradeTypes.Add(UpgradeType.Spawner);
 
         }
 
-        print(upgradeTypes.Count + " upgrade types available for selection." + owner.OwnerName + "UpgradeCount : " + owner.UpgradeCount);
         int randomIndex = UnityEngine.Random.Range(0, upgradeTypes.Count);
 
         return upgradeTypes[randomIndex];
@@ -95,8 +83,6 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
         //    availableOptions.Add((UpgradeType.Upgrader, upgradeWeightConfig.GetWeight(UpgradeType.Upgrader)));
 
         //availableOptions.Add((UpgradeType.Spawner, upgradeWeightConfig.GetWeight(UpgradeType.Spawner)));
-
-
 
         //// Adds weights to totalWeight which is in the available options
         //float totalWeight = 0;
@@ -117,7 +103,7 @@ public class UpgradeCardManager : SingletonMonoBehaviour<UpgradeCardManager>
         //return availableOptions[0].type; // fallback
     }
 
-    // Creates a random upgrade card based on the selected owner
+    // Creates a random upgrade card based on the selected owner !!! NEEDS REFACTORING
     public List<UpgradeCardData> ReturnRandomUpgradeList(Owner owner, int selectCount)
     {
         var selectedCards = new List<UpgradeCardData>();

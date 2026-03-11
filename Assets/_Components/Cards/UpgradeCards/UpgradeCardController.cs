@@ -70,6 +70,14 @@ public class UpgradeCardController
         view.SetBackgroundColor(cardColor);
     }
 
+    public void UpdateCard(UpgradeCardData newData)
+    {
+        this.model = newData;
+        view.SetData(newData); // UI’yý güncelle
+        ProcessUpgradeType();
+        ProcessCardColor();
+    }
+
     private void HandleViewClicked()
     {
         // Trigger global static events

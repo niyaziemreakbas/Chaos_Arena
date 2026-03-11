@@ -27,6 +27,8 @@ public class UpgradeCardView : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public Action OnViewClicked;
 
+    UpgradeCardData upgradeCardData;
+
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
@@ -89,6 +91,12 @@ public class UpgradeCardView : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         // Notify subscribers (the Controller)
         OnViewClicked?.Invoke();
+    }
+
+    public void SetData(UpgradeCardData data)
+    {
+        this.upgradeCardData = data;
+        SetCharacterInfo(data.charData.charName, data.charData.charImage);
     }
 
     public void SetCharacterInfo(string name, Sprite image)

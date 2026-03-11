@@ -9,6 +9,7 @@ public class PlayerOwner : Owner
     public static event Action OnFightViewHandle;
     public static event Action OnCardSelectionHandle;
 
+    private bool selectionLocked = false;
 
     private void OnEnable()
     {
@@ -33,7 +34,7 @@ public class PlayerOwner : Owner
 
     protected override void HandleUpgradeState()
     {
-        print("Player Owner handling upgrade state.");
+        selectionLocked = false;
         OnUpgradeViewHandle?.Invoke();
     }
 
@@ -45,14 +46,23 @@ public class PlayerOwner : Owner
 
     private void UpgradeCardClicked(UpgradeCardData upgradeCardData, Owner owner)
     {
-        if (GameStateManager.Instance.DecideCanUpgradeForOwner(this) || IsLosedLastFight)
-        {
-            if(UpgradeCardManager.Instance.HandleCardUpgrades(upgradeCardData, this))
-            {
-                OnUpgradePerformedFunction();
+        if (selectionLocked)
+            return;
 
-                OnCardSelectionHandle?.Invoke();
-            }
+        selectionLocked = true;
+
+        print("PLAYER CLICK");
+
+        if (UpgradeCardManager.Instance.HandleCardUpgrades(upgradeCardData, this))
+        {
+            OnUpgradePerformedFunction();
+
+            OnCardSelectionHandle?.Invoke();
+        }
+        else
+        {
+            Debug.LogError("UpgradeCardManager failed to handle the card upgrade. Check the implementation of HandleCardUpgrades.");
+            selectionLocked = false;
         }
     }
 }

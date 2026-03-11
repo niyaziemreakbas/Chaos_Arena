@@ -1872,7 +1872,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upgradeCardsPanel: {fileID: 1617607343}
-  upgradeCards:
+  upgradeCardsGOs:
   - {fileID: 237753308435333897}
   - {fileID: 237753308435333896}
   - {fileID: 237753308435333895}
@@ -2181,10 +2181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upgradeCardsPanel: {fileID: 1617607343}
-  upgradeCards:
-  - {fileID: 237753308435333897}
-  - {fileID: 237753308435333896}
-  - {fileID: 237753308435333895}
+  upgradeCardsGOs: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

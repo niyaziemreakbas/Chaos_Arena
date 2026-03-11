@@ -43,7 +43,7 @@ public class OwnerView : MonoBehaviour
         }
 
         HealthCount.text = owner.GameHealth.ToString();
-        UpgradeCount.text = owner.UpgradeCount.ToString();
+        //UpgradeCount.text = owner.UpgradeCount.ToString();
         OwnerName.text = owner.OwnerName;
  
         OwnerName.color = owner.teamColor;

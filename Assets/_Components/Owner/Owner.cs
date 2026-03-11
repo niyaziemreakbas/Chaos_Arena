@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class Owner : MonoBehaviour
 {
-    public event Action<Owner> OnUpgradePerformed;
+   // public event Action<Owner> OnUpgradePerformed;
     public event Action OnBonusPlayed;
     public event Action OnDataChanged;
 
@@ -37,19 +37,19 @@ public abstract class Owner : MonoBehaviour
         }
     }
 
-    protected int upgradeCount = 0;
-    public int UpgradeCount
-    {
-        get => upgradeCount;
-        protected set
-        {
-            if (upgradeCount != value)
-            {
-                upgradeCount = value;
-                OnDataChanged?.Invoke();
-            }
-        }
-    }
+    //protected int upgradeCount = 0;
+    //public int UpgradeCount
+    //{
+    //    get => upgradeCount;
+    //    protected set
+    //    {
+    //        if (upgradeCount != value)
+    //        {
+    //            upgradeCount = value;
+    //            OnDataChanged?.Invoke();
+    //        }
+    //    }
+    //}
 
     public string OwnerName;
     public Color teamColor;
@@ -71,6 +71,17 @@ public abstract class Owner : MonoBehaviour
 
     protected void OnUpgradePerformedFunction()
     {
+        //if (IsLosedLastFight)
+        //{
+        //    IsLosedLastFight = false;
+        //    OnBonusPlayed?.Invoke();
+        //}
+        //else
+        //{
+        //    //UpgradeCount++;
+        //    OnUpgradePerformed?.Invoke(this);
+        //}
+
         if (IsLosedLastFight)
         {
             IsLosedLastFight = false;
@@ -78,8 +89,7 @@ public abstract class Owner : MonoBehaviour
         }
         else
         {
-            UpgradeCount++;
-            OnUpgradePerformed?.Invoke(this);
+            GameStateManager.Instance.NotifyOwnerUpgradeSelected(this);
         }
     }
 
@@ -103,8 +113,6 @@ public abstract class Owner : MonoBehaviour
 
     protected virtual void HandleFightState()
     {
-        UpgradeCount = 0;
-
         foreach (var character in unitRegistry.SpawnedCharacters)
         {
             character.GetComponent<Character>().OnFightStateStarted();
@@ -119,8 +127,6 @@ public abstract class Owner : MonoBehaviour
 
     public void Reset()
     {
-        UpgradeCount = 0;
-
         FormationManager.Reposition(this);
         CharacterSpawner.Instance.ActivateAllIfInactive(unitRegistry.SpawnedCharacters);
     }

@@ -30,13 +30,14 @@ public class GameSceneManager : MonoBehaviour
 
     private List<CharacterData> GetCardsAsList()
     {
+        print("Getting cards from inventory...");
         List<CharacterData> selectedCards = new List<CharacterData>();
         foreach (Transform child in inventory)
         {
             CardSlot cardSlot = child.GetComponent<CardSlot>();
             if (cardSlot != null && cardSlot.CurrentCard != null)
             {
-                //print("Card found: " + cardSlot.CurrentCard.CardData.cardName);
+                print("Card selected: " + cardSlot.CurrentCard.CardData.cardName);
                 selectedCards.Add(new CharacterData(cardSlot.CurrentCard.CardData));
             }
         }

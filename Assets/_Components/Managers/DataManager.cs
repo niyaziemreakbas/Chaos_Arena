@@ -9,6 +9,7 @@ public class DataManager : SingletonMonoBehaviour<DataManager>
 
     public List<CardSO> cardSOList = new List<CardSO>();
     private List<CardData> cardDataList = new List<CardData>();
+
     private List<CharacterData> characterDataList = new List<CharacterData>();
     public List<CharacterData> CharDataList => characterDataList;
 
@@ -65,7 +66,6 @@ public class DataManager : SingletonMonoBehaviour<DataManager>
         }
 
         return selectedDeck;
-
     }
 
     public void SetPlayerSelectedData(List<CharacterData> characterDatas)
